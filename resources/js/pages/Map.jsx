@@ -29,8 +29,6 @@ function HeatmapLayer({ show, data, opacity, animationPhase }) {
         const blurVariation = animationPhase * 10;
         const opacityVariation = 0.3 + (animationPhase * 0.1);
 
-        console.log("data: ", data);
-
         heatLayerRef.current = L.heatLayer(data, {
             radius: 50 + radiusVariation,
             blur: 35 + blurVariation,
@@ -169,6 +167,7 @@ export default function Map() {
     const [opacity, setOpacity] = useState(1);
     const [animationPhase, setAnimationPhase] = useState(0);
     const [pulsePhase, setPulsePhase] = useState(0);
+    const [baseMap, setBaseMap] = useState('street');
 
     const fetchPrecipitationData = async () => {
         setIsLoadingPrecip(true);
@@ -193,7 +192,6 @@ export default function Map() {
             const delayBetweenBatches = 100;
 
             for (let i = 0; i < points.length; i += batchSize) {
-                console.log(i);
                 const batch = points.slice(i, i + batchSize);
                 const lats = batch.map(p => p.lat).join(',');
                 const lons = batch.map(p => p.lon).join(',');
@@ -221,7 +219,6 @@ export default function Map() {
                         if (point.latitude && point.latitude) {
                             const precip = point.current.precipitation || 0;
                             if (precip > 0) {
-                                console.log("inside point loop lng: ", point.longitude);
                                 const intensity = Math.min(precip / 50, 1);
                                 allData.push([
                                     point.latitude,
@@ -233,7 +230,6 @@ export default function Map() {
                             console.warn("Invalid point data: ", point);
                         }
 
-                        console.log("allData loop: ", allData);
                     }
 
                 } catch (err) {
@@ -245,7 +241,6 @@ export default function Map() {
             }
 
             console.log("allData: ", allData);
-            console.log("points: ", points);
 
             setHeatmapData(allData);
             setLastUpdatePrecip(new Date());
@@ -347,10 +342,33 @@ export default function Map() {
                     scrollWheelZoom={true}
                     className="h-full w-full rounded-lg"
                 >
-                    <TileLayer
-                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                        attribution='&copy; <a href="https://www.openstreetmap.org/">OSM</a> contributors'
-                    />
+                    {baseMap === "street" && (
+                        <TileLayer
+                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                            attribution='&copy; <a href="https://www.openstreetmap.org/">OSM</a> contributors'
+                        />
+                    )}
+
+                    {baseMap === "dark" && (
+                        <TileLayer
+                            url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+                            attribution='&copy; <a href="https://carto.com/">CARTO</a>'
+                        />
+                    )}
+
+                    {baseMap === "satellite" && (
+                        <TileLayer
+                            url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+                            attribution='Tiles &copy; Esri'
+                        />
+                    )}
+
+                    {baseMap === "terrain" && (
+                        <TileLayer
+                            url="https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png"
+                            attribution='Map data: &copy; <a href="https://opentopomap.org">OpenTopoMap</a>'
+                        />
+                    )}
 
                     <HeatmapLayer
                         show={showHeatmap}
@@ -370,6 +388,21 @@ export default function Map() {
                 {/* Toggle Controls - Bottom Right */}
                 <div className="absolute bottom-6 right-6 z-[1000] bg-white rounded-lg shadow-lg p-4 max-w-xs">
                     <div className="flex flex-col gap-3">
+                        {/* Map type selector */}
+                        <div className="flex items-center gap-3 border-t pt-3">
+                            <div className="text-gray-900 font-medium">Map Type:</div>
+                            <select
+                                value={baseMap}
+                                onChange={(e) => setBaseMap(e.target.value)}
+                                className="bg-gray-100 border border-gray-300 text-gray-800 text-sm rounded p-1"
+                            >
+                                <option value="street">Street</option>
+                                <option value="dark">Dark</option>
+                                <option value="satellite">Satellite</option>
+                                <option value="terrain">Terrain</option>
+                            </select>
+                        </div>
+
                         {/* Precipitation Toggle */}
                         <div className="flex items-center gap-3">
                             <label className="flex items-center cursor-pointer">
