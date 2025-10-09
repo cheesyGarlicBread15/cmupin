@@ -3,6 +3,7 @@ import { MapContainer, TileLayer, useMap, CircleMarker, Popup } from "react-leaf
 import L from "leaflet";
 import "leaflet.heat";
 import AppLayout from "../layouts/AppLayout";
+import { all } from "axios";
 
 function HeatmapLayer({ show, data, opacity, animationPhase }) {
     const map = useMap();
@@ -27,6 +28,8 @@ function HeatmapLayer({ show, data, opacity, animationPhase }) {
         const radiusVariation = animationPhase * 15;
         const blurVariation = animationPhase * 10;
         const opacityVariation = 0.3 + (animationPhase * 0.1);
+
+        console.log("data: ", data);
 
         heatLayerRef.current = L.heatLayer(data, {
             radius: 50 + radiusVariation,
@@ -215,31 +218,22 @@ export default function Map() {
                     const data = await response.json();
 
                     for (const point of data) {
-                        console.log(point);
-                        if (point.latitude && Array.isArray(point.latitude)) {
-                            for (let j = 0; j < point.latitude.length; j++) {
-                                const precip = point.current?.precipitation?.[j] || 0;
-
-                                if (precip > 0) {
-                                    const intensity = Math.min(precip / 50, 1);
-                                    allData.push([
-                                        point.latitude[j],
-                                        point.longitude[j],
-                                        intensity
-                                    ]);
-                                }
-                            }
-                        } else if (point.current) {
+                        if (point.latitude && point.latitude) {
                             const precip = point.current.precipitation || 0;
                             if (precip > 0) {
+                                console.log("inside point loop lng: ", point.longitude);
                                 const intensity = Math.min(precip / 50, 1);
                                 allData.push([
-                                    batch[0].lat,
-                                    batch[0].lon,
+                                    point.latitude,
+                                    point.longitude,
                                     intensity
                                 ]);
                             }
+                        } else if (point.current) {
+                            console.warn("Invalid point data: ", point);
                         }
+
+                        console.log("allData loop: ", allData);
                     }
 
                 } catch (err) {
@@ -250,7 +244,9 @@ export default function Map() {
                 await new Promise(resolve => setTimeout(resolve, delayBetweenBatches));
             }
 
-            console.log(`Collected ${allData.length} precipitation data points`);
+            console.log("allData: ", allData);
+            console.log("points: ", points);
+
             setHeatmapData(allData);
             setLastUpdatePrecip(new Date());
             setOpacity(0);
@@ -286,11 +282,11 @@ export default function Map() {
         }
     };
 
-    // Auto-refresh precipitation every 1 minute
+    // Auto-refresh precipitation every 10 minute
     useEffect(() => {
         if (!showHeatmap) return;
         fetchPrecipitationData();
-        const interval = setInterval(fetchPrecipitationData, 60000);
+        const interval = setInterval(fetchPrecipitationData, 600000);
         return () => clearInterval(interval);
     }, [showHeatmap]);
 
@@ -298,11 +294,11 @@ export default function Map() {
     useEffect(() => {
         if (!showEarthquakes) return;
         fetchEarthquakeData();
-        const interval = setInterval(fetchEarthquakeData, 60000);
+        const interval = setInterval(fetchEarthquakeData, 600000);
         return () => clearInterval(interval);
     }, [showEarthquakes]);
 
-    // Smooth breathing animation for precipitation
+    // animation for precipitation
     useEffect(() => {
         if (!showHeatmap) return;
         let animationFrame;
@@ -320,7 +316,7 @@ export default function Map() {
         };
     }, [showHeatmap]);
 
-    // Pulsing animation for earthquakes
+    // animation for earthquakes
     useEffect(() => {
         if (!showEarthquakes) return;
         let animationFrame;
