@@ -386,7 +386,13 @@ export default function Map() {
                 </MapContainer>
 
                 {/* Toggle Controls - Bottom Right */}
-                <div className="absolute bottom-6 right-6 z-[1000] bg-white rounded-lg shadow-lg p-4 max-w-xs">
+                <div
+                    className="absolute bottom-4 right-4 md:bottom-6 md:right-6 z-[1000] 
+               bg-white/95 backdrop-blur-sm rounded-lg shadow-lg p-3 md:p-4 
+               w-[90%] max-w-xs md:w-auto md:max-w-sm 
+               border border-gray-200 overflow-y-auto max-h-[70vh] 
+               transition-all duration-300"
+                >
                     <div className="flex flex-col gap-3">
                         {/* Map type selector */}
                         <div className="flex items-center gap-3 border-t pt-3">
