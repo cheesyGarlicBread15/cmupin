@@ -3,7 +3,7 @@ import { MapContainer, TileLayer, useMap, CircleMarker, Popup } from "react-leaf
 import L from "leaflet";
 import "leaflet.heat";
 import AppLayout from "../layouts/AppLayout";
-import { all } from "axios";
+import MapControls from "@/components/MapControls"; // Import the new component
 
 function HeatmapLayer({ show, data, opacity, animationPhase }) {
     const map = useMap();
@@ -335,12 +335,13 @@ export default function Map() {
 
     return (
         <AppLayout>
-            <div className="h-screen w-full bg-gray-900 text-white relative">
+            <div className="fixed inset-0 bg-gray-900 text-white">
                 <MapContainer
                     center={[12.8797, 121.7740]}
                     zoom={6}
+                    zoomControl={false}
                     scrollWheelZoom={true}
-                    className="h-full w-full rounded-lg"
+                    className="h-full w-full"
                 >
                     {baseMap === "street" && (
                         <TileLayer
@@ -385,117 +386,21 @@ export default function Map() {
                     />
                 </MapContainer>
 
-                {/* Toggle Controls - Bottom Right */}
-                <div
-                    className="absolute bottom-4 right-4 md:bottom-6 md:right-6 z-[1000] 
-               bg-white/95 backdrop-blur-sm rounded-lg shadow-lg p-3 md:p-4 
-               w-[90%] max-w-xs md:w-auto md:max-w-sm 
-               border border-gray-200 overflow-y-auto max-h-[70vh] 
-               transition-all duration-300"
-                >
-                    <div className="flex flex-col gap-3">
-                        {/* Map type selector */}
-                        <div className="flex items-center gap-3 border-t pt-3">
-                            <div className="text-gray-900 font-medium">Map Type:</div>
-                            <select
-                                value={baseMap}
-                                onChange={(e) => setBaseMap(e.target.value)}
-                                className="bg-gray-100 border border-gray-300 text-gray-800 text-sm rounded p-1"
-                            >
-                                <option value="street">Street</option>
-                                <option value="dark">Dark</option>
-                                <option value="satellite">Satellite</option>
-                                <option value="terrain">Terrain</option>
-                            </select>
-                        </div>
-
-                        {/* Precipitation Toggle */}
-                        <div className="flex items-center gap-3">
-                            <label className="flex items-center cursor-pointer">
-                                <div className="relative">
-                                    <input
-                                        type="checkbox"
-                                        className="sr-only"
-                                        checked={showHeatmap}
-                                        onChange={(e) => setShowHeatmap(e.target.checked)}
-                                    />
-                                    <div className={`block w-14 h-8 rounded-full transition ${showHeatmap ? 'bg-green-600' : 'bg-gray-300'}`}></div>
-                                    <div className={`dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition transform ${showHeatmap ? 'translate-x-6' : ''}`}></div>
-                                </div>
-                                <span className="ml-3 text-gray-900 font-medium">
-                                    Precipitation
-                                </span>
-                            </label>
-                        </div>
-
-                        {showHeatmap && lastUpdatePrecip && (
-                            <div className="text-xs text-gray-600 pl-1">
-                                {isLoadingPrecip ? 'Loading...' : `Updated: ${lastUpdatePrecip.toLocaleTimeString()}`}
-                            </div>
-                        )}
-
-                        {/* Earthquake Toggle */}
-                        <div className="flex items-center gap-3 border-t pt-3">
-                            <label className="flex items-center cursor-pointer">
-                                <div className="relative">
-                                    <input
-                                        type="checkbox"
-                                        className="sr-only"
-                                        checked={showEarthquakes}
-                                        onChange={(e) => setShowEarthquakes(e.target.checked)}
-                                    />
-                                    <div className={`block w-14 h-8 rounded-full transition ${showEarthquakes ? 'bg-red-600' : 'bg-gray-300'}`}></div>
-                                    <div className={`dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition transform ${showEarthquakes ? 'translate-x-6' : ''}`}></div>
-                                </div>
-                                <span className="ml-3 text-gray-900 font-medium">
-                                    Earthquakes
-                                </span>
-                            </label>
-                        </div>
-
-                        {showEarthquakes && lastUpdateEarthquakes && (
-                            <div className="text-xs text-gray-600 pl-1">
-                                {isLoadingEarthquakes ? 'Loading...' : `${earthquakes.length} earthquakes | Updated: ${lastUpdateEarthquakes.toLocaleTimeString()}`}
-                            </div>
-                        )}
-
-                        {/* Precipitation Legend */}
-                        {showHeatmap && heatmapData.length > 0 && (
-                            <div className="border-t pt-2">
-                                <div className="text-xs text-gray-700 font-medium mb-1">
-                                    Precipitation (mm/h)
-                                </div>
-                                <div className="flex items-center gap-1">
-                                    <span className="text-xs text-gray-600">0</span>
-                                    <div className="flex-1 h-3 rounded"
-                                        style={{
-                                            background: 'linear-gradient(to right, #00ff00, #c8ff00, #ffff00, #ffc800, #ff6400, #ff0000)'
-                                        }}
-                                    ></div>
-                                    <span className="text-xs text-gray-600">50+</span>
-                                </div>
-                            </div>
-                        )}
-
-                        {/* Earthquake Legend */}
-                        {showEarthquakes && earthquakes.length > 0 && (
-                            <div className="border-t pt-2">
-                                <div className="text-xs text-gray-700 font-medium mb-1">
-                                    Magnitude
-                                </div>
-                                <div className="flex items-center gap-1">
-                                    <span className="text-xs text-gray-600">4.0</span>
-                                    <div className="flex-1 h-3 rounded"
-                                        style={{
-                                            background: 'linear-gradient(to right, #ffffff, #ffcccc, #ff6666, #cc0000, #990000)'
-                                        }}
-                                    ></div>
-                                    <span className="text-xs text-gray-600">7.0+</span>
-                                </div>
-                            </div>
-                        )}
-                    </div>
-                </div>
+                {/* New Modern Map Controls */}
+                <MapControls
+                    baseMap={baseMap}
+                    setBaseMap={setBaseMap}
+                    showHeatmap={showHeatmap}
+                    setShowHeatmap={setShowHeatmap}
+                    showEarthquakes={showEarthquakes}
+                    setShowEarthquakes={setShowEarthquakes}
+                    isLoadingPrecip={isLoadingPrecip}
+                    isLoadingEarthquakes={isLoadingEarthquakes}
+                    lastUpdatePrecip={lastUpdatePrecip}
+                    lastUpdateEarthquakes={lastUpdateEarthquakes}
+                    earthquakes={earthquakes}
+                    heatmapData={heatmapData}
+                />
 
                 {/* Earthquake Detail Panel */}
                 {selectedEarthquake && (
@@ -514,20 +419,27 @@ export default function Map() {
 
                         <div className="space-y-2 text-sm text-gray-700">
                             <div>
-                                <span className="font-semibold">Location:</span> {selectedEarthquake.properties.place}
+                                <span className="font-semibold">Location:</span>{" "}
+                                {selectedEarthquake.properties.place}
                             </div>
                             <div>
-                                <span className="font-semibold">Time:</span> {new Date(selectedEarthquake.properties.time).toLocaleString()}
+                                <span className="font-semibold">Time:</span>{" "}
+                                {new Date(
+                                    selectedEarthquake.properties.time
+                                ).toLocaleString()}
                             </div>
                             <div>
-                                <span className="font-semibold">Depth:</span> {selectedEarthquake.geometry.coordinates[2].toFixed(2)} km
+                                <span className="font-semibold">Depth:</span>{" "}
+                                {selectedEarthquake.geometry.coordinates[2].toFixed(2)} km
                             </div>
                             <div>
-                                <span className="font-semibold">Type:</span> {selectedEarthquake.properties.magType}
+                                <span className="font-semibold">Type:</span>{" "}
+                                {selectedEarthquake.properties.magType}
                             </div>
                             {selectedEarthquake.properties.felt && (
                                 <div>
-                                    <span className="font-semibold">Felt Reports:</span> {selectedEarthquake.properties.felt}
+                                    <span className="font-semibold">Felt Reports:</span>{" "}
+                                    {selectedEarthquake.properties.felt}
                                 </div>
                             )}
                             {selectedEarthquake.properties.tsunami === 1 && (

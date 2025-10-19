@@ -26,8 +26,10 @@
         "@inertiajs/react": "^2.2.5",
         "leaflet": "^1.9.4",
         "leaflet.heat": "^0.2.0",
+        "lucide-react": "^0.546.0",
         "react": "^19.2.0",
         "react-dom": "^19.2.0",
-        "react-leaflet": "^4.2.1"
+        "react-leaflet": "^4.2.1",
+        "recharts": "^3.3.0"
     }
 }

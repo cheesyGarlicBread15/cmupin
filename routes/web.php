@@ -9,9 +9,9 @@ Route::get('/', function () {
     return Inertia::render('Auth/Login');
 });
 
-Route::get('/home', function () {
-    return Inertia::render('Home');
-})->middleware(['auth', 'verified'])->name('home');
+Route::get('/dashboard', function () {
+    return Inertia::render('Dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
 Route::get('/map', function () {
     return Inertia::render('Map');
 })->middleware(['auth', 'verified'])->name('map');

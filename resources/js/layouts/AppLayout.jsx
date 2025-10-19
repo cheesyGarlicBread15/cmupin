@@ -7,7 +7,7 @@ export default function AppLayout({ children }) {
     const { post } = useForm();
 
     const navLinks = [
-        { name: "Home", href: route('home') },
+        { name: "Dashboard", href: route('dashboard') },
         { name: "Map", href: route('map') },
         { name: "Profile", href: route('profile.edit') },
     ];
@@ -64,15 +64,22 @@ export default function AppLayout({ children }) {
             {/* Main content */}
             <div className="flex-1 flex flex-col overflow-hidden">
                 {/* Mobile topbar */}
-                <div className="md:hidden bg-gray-900 border-b border-gray-800 p-3 flex items-center justify-between">
+                <div className="md:hidden bg-gray-900 border-b border-gray-800 p-3 flex items-center justify-between z-40 relative">
                     <div className="text-xl font-bold text-red-500">CMUPin</div>
                     <button
-                        className="text-gray-200 text-2xl focus:outline-none"
+                        className="text-gray-200 text-2xl focus:outline-none z-50"
                         onClick={() => setSidebarOpen(!sidebarOpen)}
                     >
                         ☰
                     </button>
                 </div>
+
+                {sidebarOpen && (
+                    <div
+                        className="fixed inset-0 bg-black bg-opacity-50 z-20 md:hidden"
+                        onClick={() => setSidebarOpen(false)}
+                    ></div>
+                )}
 
                 {/* Page content */}
                 <main className="flex-1 overflow-y-auto p-6 bg-gray-950">
