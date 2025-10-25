@@ -17,6 +17,8 @@ Route::get('/', function () {
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified', 'role:admin|leader|member'])->name('dashboard');
+// middleware role shows what user roles can access, if role is not listed it will return 403 forbidden
+
 Route::get('/map', function () {
     return Inertia::render('Map');
 })->middleware(['auth', 'verified'])->name('map');

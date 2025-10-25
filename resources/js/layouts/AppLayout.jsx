@@ -1,7 +1,9 @@
 import { Link, useForm, usePage } from '@inertiajs/react';
-import { useState } from 'react';
+import { use, useState } from 'react';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function AppLayout({ children }) {
+    const { isAdmin, isMember, isLeader } = useAuth();
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const { url } = usePage(); // to check active route
     const { post } = useForm();
@@ -26,7 +28,13 @@ export default function AppLayout({ children }) {
             >
                 <div className="flex flex-col h-full">
                     <div className="p-5 text-2xl font-extrabold tracking-wide text-center border-b border-gray-800">
-                        CMU<span className="text-red-500">Pin</span>
+                        CMU
+
+                        {/* example of showing in frontend what is restricted */}
+                        {isAdmin() || isMember() &&
+                            <span className="text-red-500">Pin</span>
+                        }
+
                     </div>
 
                     <nav className="flex-1 p-4 space-y-1">
