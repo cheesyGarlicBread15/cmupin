@@ -2,8 +2,40 @@ import { useEffect, useState, useRef } from "react";
 import { MapContainer, TileLayer, useMap, CircleMarker, Popup } from "react-leaflet";
 import L from "leaflet";
 import "leaflet.heat";
-import AppLayout from "../layouts/AppLayout";
-import MapControls from "@/components/MapControls"; // Import the new component
+import AppLayout from "@/layouts/AppLayout";
+import MapControls from "@/components/MapControls";
+import HazardReportModal from "@/components/HazardReportModal";
+
+function MapRightClickHandler({ setContextMenu }) {
+    const map = useMap();
+
+    useEffect(() => {
+        const handleRightClick = (e) => {
+            setContextMenu({
+                visible: true,
+                x: e.originalEvent.clientX,
+                y: e.originalEvent.clientY,
+                latlng: e.latlng,
+            });
+
+        };
+
+        const handleLeftClick = () => {
+            setContextMenu({ visible: false });
+        };
+
+        map.on("contextmenu", handleRightClick);
+        map.on("click", handleLeftClick);
+
+        return () => {
+            map.off("contextmenu", handleRightClick);
+            map.off("click", handleLeftClick);
+        };
+    }, [map, setContextMenu]);
+
+    return null;
+}
+
 
 function HeatmapLayer({ show, data, opacity, animationPhase }) {
     const map = useMap();
@@ -168,6 +200,17 @@ export default function Map() {
     const [animationPhase, setAnimationPhase] = useState(0);
     const [pulsePhase, setPulsePhase] = useState(0);
     const [baseMap, setBaseMap] = useState('street');
+    const [showHazardModal, setShowHazardModal] = useState(false);
+    const [hazardCoords, setHazardCoords] = useState(null);
+
+
+    const [contextMenu, setContextMenu] = useState({
+        visible: false,
+        x: 0,
+        y: 0,
+        latlng: null,
+    });
+
 
     const fetchPrecipitationData = async () => {
         setIsLoadingPrecip(true);
@@ -343,6 +386,8 @@ export default function Map() {
                     scrollWheelZoom={true}
                     className="h-full w-full"
                 >
+                    <MapRightClickHandler setContextMenu={setContextMenu} />
+
                     {baseMap === "street" && (
                         <TileLayer
                             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -385,6 +430,38 @@ export default function Map() {
                         pulsePhase={pulsePhase}
                     />
                 </MapContainer>
+
+                {/* right click menu */}
+                {contextMenu.visible && (
+                    <div
+                        className="absolute z-[2000] bg-white text-gray-800 rounded-md shadow-lg p-2"
+                        style={{
+                            top: contextMenu.y,
+                            left: contextMenu.x,
+                            transform: "translate(5px, 5px)",
+                            minWidth: "140px",
+                        }}
+                        onMouseLeave={() => setContextMenu({ visible: false })}
+                    >
+                        <button
+                            className="flex items-center w-full text-left hover:bg-gray-100 px-3 py-2 rounded text-sm font-medium"
+                            onClick={() => {
+                                setHazardCoords(contextMenu.latlng);
+                                setContextMenu({ visible: false });
+                                setShowHazardModal(true);
+                            }}
+                        >
+                            <span className="mr-2">📍</span> Report Hazard
+                        </button>
+                    </div>
+                )}
+
+                {/* Hazard Report Modal */}
+                <HazardReportModal
+                    show={showHazardModal}
+                    onClose={() => setShowHazardModal(false)}
+                    coordinates={hazardCoords}
+                />
 
                 {/* New Modern Map Controls */}
                 <MapControls
