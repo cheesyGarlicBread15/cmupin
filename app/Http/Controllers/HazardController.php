@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Hazard;
 use App\Models\HazardType;
+use App\Models\User;
+use App\Notifications\NewHazardAlert;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Notification;
 
 class HazardController extends Controller
 {
@@ -16,7 +19,7 @@ class HazardController extends Controller
 
         return Inertia::render('Map/Map', [
             'hazards' => $hazards,
-            'hazardTypes' => HazardType::orderBy('name')->get(),
+            'hazardTypes' => HazardType::all(),
         ]);
     }
 
@@ -44,9 +47,11 @@ class HazardController extends Controller
         $data['user_id'] = Auth::id();
         $data['status'] = 'open';
 
-        Hazard::create($data);
+        $hazard = Hazard::create($data);
 
-        // optional: log activity here
+        // Send alert to all users with emails
+        $users = User::whereNotNull('email')->get();
+        Notification::send($users, new NewHazardAlert($hazard));
 
         return back()->with('success', 'Hazard pinned successfully.');
     }

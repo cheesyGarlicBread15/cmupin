@@ -2,7 +2,6 @@ import { useForm } from '@inertiajs/react';
 import { useEffect } from 'react';
 
 export default function HazardReportModal({ show, onClose, coordinates }) {
-    console.log(coordinates);
     const { data, setData, post, processing, reset, errors } = useForm({
         title: '',
         description: '',

@@ -20,6 +20,13 @@ class UserSeeder extends Seeder
             'phone_number' => '09924782938',
         ]);
 
+        $member1 = User::create([
+            'name' => 'Daven Alajid',
+            'email' => 's.alajid.daven@cmu.edu.ph',
+            'password' => bcrypt('member'),
+            'phone_number' => '09301539848',
+        ]);
+
         $admin->assignRole('admin');
     }
 }

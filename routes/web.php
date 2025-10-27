@@ -22,13 +22,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('/hazards')->name('hazards.')->group(function () {
         Route::get('/', [HazardController::class, 'index'])
             ->name('index');
-    
+
         Route::post('/', [HazardController::class, 'store'])
             ->name('store');
-    
+
         Route::patch('/{hazard}', [HazardController::class, 'update'])
             ->name('update');
-    
+
         Route::delete('/{hazard}', [HazardController::class, 'destroy'])
             ->middleware('role:admin')
             ->name('destroy');

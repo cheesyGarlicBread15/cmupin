@@ -7,11 +7,7 @@ export default function AppLayout({ children }) {
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const { url } = usePage(); // to check active route
     const { post } = useForm();
-
-    console.log("Roles array:", user?.role);
-    console.log("isAdmin:", isAdmin());
-    console.log("isLeader:", isLeader());
-
+    
     const navLinks = [
         { name: "Dashboard", href: route('dashboard'), roles: ['admin', 'leader', 'member'] },
         { name: "Map", href: route('map'), roles: ['admin', 'leader', 'member'] },
