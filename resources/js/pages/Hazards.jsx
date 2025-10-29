@@ -211,17 +211,19 @@ export default function Hazards({ hazards, filters }) {
 
                 {/* Modal */}
                 {modal.open && (
-                    <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50 animate-fadeIn">
-                        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl p-6 max-w-sm w-full text-center">
-                            <h2 className="text-lg font-semibold mb-3">
+                    <div
+                        className="fixed inset-0 flex items-center justify-center bg-black/50 z-50 animate-fadeIn"
+                        onClick={() => setModal({ open: false, action: null, hazardId: null })}
+                    >
+                        <div
+                            className="bg-white dark:bg-gray-800 rounded-xl shadow-xl p-6 max-w-sm w-full text-center"
+                            onClick={(e) => e.stopPropagation()} // prevent closing when clicking inside
+                        >
+                            <h2 className="text-lg font-semibold mb-3 capitalize">
                                 {modal.action === 'delete' ? 'Delete Hazard' : 'Resolve Hazard'}
                             </h2>
                             <p className="text-sm text-gray-600 dark:text-gray-300 mb-6">
-                                Are you sure you want to{' '}
-                                <span className="font-semibold text-red-600 dark:text-red-400">
-                                    {modal.action}
-                                </span>{' '}
-                                this hazard? This action cannot be undone.
+                                Are you sure you want to {modal.action} this hazard?
                             </p>
                             <div className="flex justify-center gap-3">
                                 <button
@@ -233,11 +235,11 @@ export default function Hazards({ hazards, filters }) {
                                 <button
                                     onClick={performAction}
                                     className={`px-4 py-2 rounded-lg text-white font-medium shadow ${modal.action === 'delete'
-                                        ? 'bg-red-600 hover:bg-red-700'
-                                        : 'bg-green-600 hover:bg-green-700'
+                                            ? 'bg-red-600 hover:bg-red-700'
+                                            : 'bg-green-600 hover:bg-green-700'
                                         }`}
                                 >
-                                    Yes, {modal.action}
+                                    Confirm
                                 </button>
                             </div>
                         </div>
