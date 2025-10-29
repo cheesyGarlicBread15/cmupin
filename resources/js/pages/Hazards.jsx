@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { router } from '@inertiajs/react';
-import { EllipsisVerticalIcon } from '@heroicons/react/24/outline';
 import AppLayout from '@/layouts/AppLayout';
 
 export default function Hazards({ hazards, filters }) {
@@ -18,11 +17,27 @@ export default function Hazards({ hazards, filters }) {
 
     const performAction = () => {
         const { action, hazardId } = modal;
+
         if (action === 'delete') {
-            router.delete(route('hazards.destroy', hazardId));
+            router.delete(route('hazards.destroy', hazardId), {
+                preserveScroll: true,
+                onSuccess: () => {
+                    // Instantly remove from table for better UX
+                    hazards.data = hazards.data.filter(h => h.id !== hazardId);
+                },
+            });
         } else if (action === 'resolve') {
-            router.put(route('hazards.update', hazardId), { status: 'resolved' });
+            router.patch(route('hazards.update', hazardId), { status: 'resolved' }, {
+                preserveScroll: true,
+                onSuccess: () => {
+                    // If currently viewing "open" tab, remove it instantly from the table
+                    if (tab === 'open') {
+                        hazards.data = hazards.data.filter(h => h.id !== hazardId);
+                    }
+                },
+            });
         }
+
         setModal({ open: false, action: null, hazardId: null });
     };
 
@@ -88,15 +103,17 @@ export default function Hazards({ hazards, filters }) {
 
                 {open && (
                     <div className="absolute right-0 mt-2 w-36 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-50 animate-fadeIn">
-                        <button
-                            onClick={() => {
-                                setOpen(false);
-                                confirmAction('resolve', hazard.id);
-                            }}
-                            className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-t-lg transition"
-                        >
-                            Mark as Resolved
-                        </button>
+                        {hazard.status !== 'resolved' && (
+                            <button
+                                onClick={() => {
+                                    setOpen(false);
+                                    confirmAction('resolve', hazard.id);
+                                }}
+                                className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-t-lg transition"
+                            >
+                                Mark as Resolved
+                            </button>
+                        )}
                         <button
                             onClick={() => {
                                 setOpen(false);
@@ -235,8 +252,8 @@ export default function Hazards({ hazards, filters }) {
                                 <button
                                     onClick={performAction}
                                     className={`px-4 py-2 rounded-lg text-white font-medium shadow ${modal.action === 'delete'
-                                            ? 'bg-red-600 hover:bg-red-700'
-                                            : 'bg-green-600 hover:bg-green-700'
+                                        ? 'bg-red-600 hover:bg-red-700'
+                                        : 'bg-green-600 hover:bg-green-700'
                                         }`}
                                 >
                                     Confirm

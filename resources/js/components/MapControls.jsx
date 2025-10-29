@@ -20,7 +20,6 @@ export default function MapControls({
     hazardTypes,
 }) {
     const [isCollapsed, setIsCollapsed] = useState(false)
-
     return (
         <>
             {/* Desktop: Side Panel */}
@@ -254,7 +253,7 @@ export default function MapControls({
                                         </div>
                                     </label>
 
-                                    {/* Optional Legend for Hazards */}
+                                    {/* Legend for Hazards */}
                                     {showHazards && hazardTypes?.length > 0 && (
                                         <div className="ml-14 pl-1 space-y-2 animate-fadeIn">
                                             <div className="text-xs font-medium text-gray-600">Hazard Types</div>
@@ -522,26 +521,6 @@ export default function MapControls({
                                             </div>
                                         </label>
 
-                                        {/* Optional Legend for Hazards */}
-                                        {showHazards && hazardTypes?.length > 0 && (
-                                            <div className="ml-14 pl-1 space-y-2 animate-fadeIn">
-                                                <div className="text-xs font-medium text-gray-600">Hazard Types</div>
-                                                <div className="flex items-center gap-3 flex-wrap">
-                                                    {hazardTypes.map((type) => (
-                                                        <div
-                                                            key={type.id}
-                                                            className="flex items-center gap-1 text-xs text-gray-700"
-                                                        >
-                                                            <span
-                                                                className="w-3 h-3 rounded-full"
-                                                                style={{ backgroundColor: type.color }}
-                                                            ></span>
-                                                            {type.name}
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                        )}
                                     </div>
                                 </div>
                             </div>

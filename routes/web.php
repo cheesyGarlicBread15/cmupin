@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\MapController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\ProfileController;
@@ -16,7 +17,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->middleware('role:admin|leader|member')
         ->name('dashboard');
 
-    Route::get('/map', [HazardController::class, 'map'])
+    Route::get('/map', [MapController::class, 'index'])
         ->name('map');
 
     Route::prefix('/hazards')->name('hazards.')->group(function () {

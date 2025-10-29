@@ -224,6 +224,8 @@ function HazardMarkers({ hazards }) {
                             {hazard.title || hazard.hazard_type?.name}
                         </strong>
                         <div class="text-sm text-gray-600">
+                            <span class="font-semibold">Description:</span> {hazard.description}
+                            <br />
                             <span class="font-semibold">Severity:</span> {hazard.severity}
                             <br />
                             <span class="font-semibold">Status:</span> {hazard.status}
@@ -516,6 +518,7 @@ export default function Map({ hazards, hazardTypes }) {
                     show={showHazardModal}
                     onClose={() => setShowHazardModal(false)}
                     coordinates={hazardCoords}
+                    hazardTypes={hazardTypes}
                 />
 
                 {/* New Modern Map Controls */}

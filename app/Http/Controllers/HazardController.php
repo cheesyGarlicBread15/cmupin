@@ -13,19 +13,9 @@ use Illuminate\Support\Facades\Notification;
 
 class HazardController extends Controller
 {
-    public function map()
-    {
-        $hazards = Hazard::with('hazardType', 'user')->get();
-
-        return Inertia::render('Map/Map', [
-            'hazards' => $hazards,
-            'hazardTypes' => HazardType::all(),
-        ]);
-    }
-
     public function index(Request $request)
     {
-        $status = $request->get('status');
+        $status = $request->get('status', 'open');
 
         $query = Hazard::with('hazardType', 'user')->latest();
 
@@ -33,7 +23,7 @@ class HazardController extends Controller
             $query->where('status', $status);
         }
 
-        $hazards = $query->paginate(10);
+        $hazards = $query->paginate(10)->appends(['status' => $status]);
 
         return Inertia::render('Hazards', [
             'hazards' => $hazards,
