@@ -16,7 +16,7 @@ class ActivityLogController extends Controller
             $query->where('action', $request->input('action'));
         }
 
-        $logs = $query->paginate(50);
+        $logs = $query->paginate(10);
 
         return inertia('ActivityLogs', [
             'logs' => $logs

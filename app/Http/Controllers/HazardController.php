@@ -23,14 +23,23 @@ class HazardController extends Controller
         ]);
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $hazards = Hazard::with('hazardType', 'user')
-            ->latest()
-            ->paginate(50);
+        $status = $request->get('status');
+
+        $query = Hazard::with('hazardType', 'user')->latest();
+
+        if ($status && $status !== 'all') {
+            $query->where('status', $status);
+        }
+
+        $hazards = $query->paginate(10);
 
         return Inertia::render('Hazards', [
             'hazards' => $hazards,
+            'filters' => [
+                'status' => $status ?? 'open',
+            ],
         ]);
     }
 
