@@ -8,7 +8,7 @@ use App\Http\Controllers\HazardController;
 use App\Http\Controllers\ActivityLogController;
 
 // TODO: household system
-// TODO: hazzard mapping
+// TODO: logs
 
 Route::get('/', fn() => Inertia::render('Auth/Login'));
 
