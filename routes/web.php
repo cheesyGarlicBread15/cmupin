@@ -1,29 +1,48 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
-use Illuminate\Foundation\Application;
+use App\Http\Controllers\MapController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\HazardController;
+use App\Http\Controllers\ActivityLogController;
+
+// TODO: household system
+// TODO: hazzard mapping
+
+Route::get('/', fn() => Inertia::render('Auth/Login'));
+
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/dashboard', fn() => Inertia::render('Dashboard'))
+        ->middleware('role:admin|leader|member')
+        ->name('dashboard');
+
+    Route::get('/map', [MapController::class, 'index'])
+        ->name('map');
+
+    Route::prefix('/hazards')->name('hazards.')->group(function () {
+        Route::get('/', [HazardController::class, 'index'])
+            ->name('index');
+
+        Route::post('/', [HazardController::class, 'store'])
+            ->name('store');
+
+        Route::patch('/{hazard}', [HazardController::class, 'update'])
+            ->name('update');
+
+        Route::delete('/{hazard}', [HazardController::class, 'destroy'])
+            ->middleware('role:admin')
+            ->name('destroy');
+    });
 
 
-// TODO: implement household system
-// TODO: implement hazard mapping
+    // Admin logs page
+    Route::middleware('role:admin')->group(function () {
+        Route::get('/admin/activity-logs', [ActivityLogController::class, 'index'])
+            ->name('admin.logs');
+    });
 
-
-Route::get('/', function () {
-    return Inertia::render('Auth/Login');
-});
-
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified', 'role:admin|leader|member'])->name('dashboard');
-// middleware role shows what user roles can access, if role is not listed it will return 403 forbidden
-
-Route::get('/map', function () {
-    return Inertia::render('Map');
-})->middleware(['auth', 'verified'])->name('map');
-
-Route::middleware('auth')->group(function () {
+    // Profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

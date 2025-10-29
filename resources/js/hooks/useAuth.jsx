@@ -2,25 +2,22 @@ import { usePage } from '@inertiajs/react';
 
 export function useAuth() {
     const { auth } = usePage().props;
+    const user = auth?.user;
 
-    const hasRole = (role) => {
-        return auth.user?.role.includes(role) ?? false;
-    };
+    const roles = Array.isArray(user?.role) ? user.role : [];
 
-    const hasAnyRole = (roles) => {
-        return roles.some(role => hasRole(role));
-    };
+    const hasRole = (role) => roles.includes(role);
 
-    const hasAllRoles = (roles) => {
-        return roles.every(role => hasRole(role));
-    };
+    const hasAnyRole = (roleList) => roleList.some((r) => roles.includes(r));
+    const hasAllRoles = (roleList) => roleList.every((r) => roles.includes(r));
 
     const isAdmin = () => hasRole('admin');
     const isLeader = () => hasRole('leader');
     const isMember = () => hasRole('member');
 
     return {
-        user: auth.user,
+        user,
+        roles,
         hasRole,
         hasAnyRole,
         hasAllRoles,

@@ -1,9 +1,41 @@
-import { useEffect, useState, useRef } from "react";
-import { MapContainer, TileLayer, useMap, CircleMarker, Popup } from "react-leaflet";
+import { useEffect, useState, useRef, useMemo } from "react";
+import { MapContainer, TileLayer, useMap, CircleMarker, Popup, Marker } from "react-leaflet";
 import L from "leaflet";
 import "leaflet.heat";
-import AppLayout from "../layouts/AppLayout";
-import MapControls from "@/components/MapControls"; // Import the new component
+import AppLayout from "@/layouts/AppLayout";
+import MapControls from "@/components/MapControls";
+import HazardReportModal from "@/components/HazardReportModal";
+
+function MapRightClickHandler({ setContextMenu }) {
+    const map = useMap();
+
+    useEffect(() => {
+        const handleRightClick = (e) => {
+            setContextMenu({
+                visible: true,
+                x: e.originalEvent.clientX,
+                y: e.originalEvent.clientY,
+                latlng: e.latlng,
+            });
+
+        };
+
+        const handleLeftClick = () => {
+            setContextMenu({ visible: false });
+        };
+
+        map.on("contextmenu", handleRightClick);
+        map.on("click", handleLeftClick);
+
+        return () => {
+            map.off("contextmenu", handleRightClick);
+            map.off("click", handleLeftClick);
+        };
+    }, [map, setContextMenu]);
+
+    return null;
+}
+
 
 function HeatmapLayer({ show, data, opacity, animationPhase }) {
     const map = useMap();
@@ -154,9 +186,62 @@ function EarthquakeMarkers({ show, earthquakes, onEarthquakeClick, pulsePhase })
     );
 }
 
-export default function Map() {
+function HazardMarkers({ hazards }) {
+    return useMemo(() => (
+        hazards?.map((hazard) => (
+            <Marker
+                key={hazard.id}
+                position={[hazard.latitude, hazard.longitude]}
+                icon={L.divIcon({
+                    className: "",
+                    html: `
+                        <div class="relative flex items-center justify-center">
+                            <span 
+                                class="absolute animate-ping rounded-full opacity-75"
+                                style="
+                                    background-color: ${hazard.hazard_type?.color || "#888"};
+                                    width: 28px;
+                                    height: 28px;
+                                ">
+                            </span>
+                            <span 
+                                class="relative rounded-full shadow-lg border-2 border-white"
+                                style="
+                                    background-color: ${hazard.hazard_type?.color || "#888"};
+                                    width: 18px;
+                                    height: 18px;
+                                ">
+                            </span>
+                        </div>
+                    `,
+                    iconSize: [28, 28],
+                    iconAnchor: [14, 14],
+                })}
+            >
+                <Popup>
+                    <div class="space-y-1">
+                        <strong class="text-gray-800">
+                            {hazard.title || hazard.hazard_type?.name}
+                        </strong>
+                        <div class="text-sm text-gray-600">
+                            <span class="font-semibold">Description:</span> {hazard.description}
+                            <br />
+                            <span class="font-semibold">Severity:</span> {hazard.severity}
+                            <br />
+                            <span class="font-semibold">Status:</span> {hazard.status}
+                        </div>
+                    </div>
+                </Popup>
+            </Marker>
+        ))
+    ), [JSON.stringify(hazards)]);
+}
+
+
+export default function Map({ hazards, hazardTypes }) {
     const [showHeatmap, setShowHeatmap] = useState(false);
     const [showEarthquakes, setShowEarthquakes] = useState(false);
+    const [showHazards, setShowHazards] = useState(false);
     const [heatmapData, setHeatmapData] = useState([]);
     const [earthquakes, setEarthquakes] = useState([]);
     const [selectedEarthquake, setSelectedEarthquake] = useState(null);
@@ -168,6 +253,17 @@ export default function Map() {
     const [animationPhase, setAnimationPhase] = useState(0);
     const [pulsePhase, setPulsePhase] = useState(0);
     const [baseMap, setBaseMap] = useState('street');
+    const [showHazardModal, setShowHazardModal] = useState(false);
+    const [hazardCoords, setHazardCoords] = useState(null);
+
+
+    const [contextMenu, setContextMenu] = useState({
+        visible: false,
+        x: 0,
+        y: 0,
+        latlng: null,
+    });
+
 
     const fetchPrecipitationData = async () => {
         setIsLoadingPrecip(true);
@@ -343,6 +439,8 @@ export default function Map() {
                     scrollWheelZoom={true}
                     className="h-full w-full"
                 >
+                    <MapRightClickHandler setContextMenu={setContextMenu} />
+
                     {baseMap === "street" && (
                         <TileLayer
                             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -371,6 +469,8 @@ export default function Map() {
                         />
                     )}
 
+                    { showHazards && <HazardMarkers hazards={hazards} /> }
+
                     <HeatmapLayer
                         show={showHeatmap}
                         data={heatmapData}
@@ -386,6 +486,41 @@ export default function Map() {
                     />
                 </MapContainer>
 
+                {/* TODO: make some into components */}
+
+                {/* right click menu */}
+                {contextMenu.visible && (
+                    <div
+                        className="absolute z-[2000] bg-white text-gray-800 rounded-md shadow-lg p-2"
+                        style={{
+                            top: contextMenu.y,
+                            left: contextMenu.x,
+                            transform: "translate(5px, 5px)",
+                            minWidth: "140px",
+                        }}
+                        onMouseLeave={() => setContextMenu({ visible: false })}
+                    >
+                        <button
+                            className="flex items-center w-full text-left hover:bg-gray-100 px-3 py-2 rounded text-sm font-medium"
+                            onClick={() => {
+                                setHazardCoords(contextMenu.latlng);
+                                setContextMenu({ visible: false });
+                                setShowHazardModal(true);
+                            }}
+                        >
+                            <span className="mr-2">📍</span> Report Hazard
+                        </button>
+                    </div>
+                )}
+
+                {/* Hazard Report Modal */}
+                <HazardReportModal
+                    show={showHazardModal}
+                    onClose={() => setShowHazardModal(false)}
+                    coordinates={hazardCoords}
+                    hazardTypes={hazardTypes}
+                />
+
                 {/* New Modern Map Controls */}
                 <MapControls
                     baseMap={baseMap}
@@ -394,17 +529,26 @@ export default function Map() {
                     setShowHeatmap={setShowHeatmap}
                     showEarthquakes={showEarthquakes}
                     setShowEarthquakes={setShowEarthquakes}
+                    showHazards={showHazards}
+                    setShowHazards={setShowHazards}
                     isLoadingPrecip={isLoadingPrecip}
                     isLoadingEarthquakes={isLoadingEarthquakes}
                     lastUpdatePrecip={lastUpdatePrecip}
                     lastUpdateEarthquakes={lastUpdateEarthquakes}
                     earthquakes={earthquakes}
                     heatmapData={heatmapData}
+                    hazards={hazards}
+                    hazardTypes={hazardTypes}
                 />
 
                 {/* Earthquake Detail Panel */}
                 {selectedEarthquake && (
-                    <div className="absolute top-6 right-6 z-[1001] bg-white rounded-lg shadow-2xl p-4 max-w-sm">
+                    <div
+                        className="absolute top-6 z-[1001] bg-white rounded-lg shadow-2xl p-4 max-w-sm"
+                        style={{
+                            left: "calc(16rem + 1.5rem)", // 16rem sidebar + 1.5rem (24px) spacing
+                        }}
+                    >
                         <div className="flex justify-between items-start mb-3">
                             <h3 className="text-lg font-bold text-gray-900">
                                 Magnitude {selectedEarthquake.properties.mag}
@@ -424,9 +568,7 @@ export default function Map() {
                             </div>
                             <div>
                                 <span className="font-semibold">Time:</span>{" "}
-                                {new Date(
-                                    selectedEarthquake.properties.time
-                                ).toLocaleString()}
+                                {new Date(selectedEarthquake.properties.time).toLocaleString()}
                             </div>
                             <div>
                                 <span className="font-semibold">Depth:</span>{" "}

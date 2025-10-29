@@ -3,15 +3,17 @@ import { use, useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 
 export default function AppLayout({ children }) {
-    const { isAdmin, isMember, isLeader } = useAuth();
+    const { user, isAdmin, isMember, isLeader } = useAuth();
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const { url } = usePage(); // to check active route
     const { post } = useForm();
-
+    
     const navLinks = [
-        { name: "Dashboard", href: route('dashboard') },
-        { name: "Map", href: route('map') },
-        { name: "Profile", href: route('profile.edit') },
+        { name: "Dashboard", href: route('dashboard'), roles: ['admin', 'leader', 'member'] },
+        { name: "Map", href: route('map'), roles: ['admin', 'leader', 'member'] },
+        { name: "Hazards", href: route('hazards.index'), roles: ['admin', 'leader', 'member'] },
+        { name: "Activity Logs", href: route('admin.logs'), roles: ['admin'] },
+        { name: "Profile", href: route('profile.edit'), roles: ['admin', 'leader', 'member'] },
     ];
 
     const handleLogout = () => {
@@ -31,7 +33,7 @@ export default function AppLayout({ children }) {
                         CMU
 
                         {/* example of showing in frontend what is restricted */}
-                        {isAdmin() || isMember() &&
+                        {(isAdmin() || isMember()) &&
                             <span className="text-red-500">Pin</span>
                         }
 
@@ -39,19 +41,26 @@ export default function AppLayout({ children }) {
 
                     <nav className="flex-1 p-4 space-y-1">
                         {navLinks.map((link) => {
+                            // ✅ Check visibility by role
+                            const canView =
+                                (link.roles.includes('admin') && isAdmin()) ||
+                                (link.roles.includes('leader') && isLeader()) ||
+                                (link.roles.includes('member') && isMember());
+
+                            if (!canView) return null;
+
                             const isActive = url.startsWith(link.href);
                             return (
                                 <Link
                                     key={link.name}
                                     href={link.href}
                                     className={`flex items-center px-4 py-2 rounded-lg transition-all duration-200
-                                        ${isActive
+                    ${isActive
                                             ? "bg-red-600 text-white font-medium"
                                             : "text-gray-300 hover:bg-gray-800 hover:text-white"
                                         }`}
                                     onClick={() => setSidebarOpen(false)}
                                 >
-                                    <span className="mr-3">{link.icon}</span>
                                     {link.name}
                                 </Link>
                             );
