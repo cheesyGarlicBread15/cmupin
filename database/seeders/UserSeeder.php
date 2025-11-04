@@ -10,7 +10,7 @@ class UserSeeder extends Seeder
 {
     /**
      * Run the database seeds.
-     */
+    */
     public function run(): void
     {
         $admin = User::create([
@@ -19,6 +19,7 @@ class UserSeeder extends Seeder
             'password' => bcrypt('password'),
             'phone_number' => '09924782938',
         ]);
+        $admin->assignRole('admin');
 
         $member1 = User::create([
             'name' => 'Daven Alajid',
@@ -26,6 +27,7 @@ class UserSeeder extends Seeder
             'password' => bcrypt('password'),
             'phone_number' => '09301539848',
         ]);
+        $member1->assignRole('member');
 
         $member2 = User::create([
             'name' => 'Garlic Pizza',
@@ -33,9 +35,7 @@ class UserSeeder extends Seeder
             'password' => bcrypt('password'),
             'phone_number' => '09301539848',
         ]);
-
-        $admin->assignRole('admin');
-        $member1->assignRole('member');
         $member2->assignRole('member');
+
     }
 }
