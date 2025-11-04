@@ -12,6 +12,7 @@ export default function AppLayout({ children }) {
         { name: "Dashboard", href: route('dashboard'), roles: ['admin', 'leader', 'member'] },
         { name: "Map", href: route('map'), roles: ['admin', 'leader', 'member'] },
         { name: "Hazards", href: route('hazards.index'), roles: ['admin', 'leader', 'member'] },
+        { name: "Households", href: route('households.index'), roles: ['admin', 'leader', 'member'] },
         { name: "Activity Logs", href: route('admin.logs'), roles: ['admin'] },
         { name: "Profile", href: route('profile.edit'), roles: ['admin', 'leader', 'member'] },
     ];

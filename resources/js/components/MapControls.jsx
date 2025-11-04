@@ -18,7 +18,11 @@ export default function MapControls({
     heatmapData,
     hazards,
     hazardTypes,
+    households,
+    setShowHouseholds,
+    showHouseholds
 }) {
+    console.log('Households:', households);
     const [isCollapsed, setIsCollapsed] = useState(false)
     return (
         <>
@@ -229,7 +233,7 @@ export default function MapControls({
                                                 <span className="text-sm font-medium text-gray-900">Hazards</span>
                                                 {showHazards && (
                                                     <div className="text-xs text-gray-500">
-                                                        {`Currently showing ${hazards?.length || 0} hazards`}
+                                                        {`Currently showing ${hazards?.length || 0} hazard/s`}
                                                     </div>
                                                 )}
                                             </div>
@@ -274,6 +278,80 @@ export default function MapControls({
                                         </div>
                                     )}
                                 </div>
+
+                                {/* Divider */}
+                                <div className="border-t border-gray-200"></div>
+
+                                {/* Household Toggle */}
+                                <div className="space-y-3">
+                                    <label className="flex items-center justify-between cursor-pointer group">
+                                        <div className="flex items-center gap-3">
+                                            <div className="p-2 bg-green-50 rounded-lg group-hover:bg-green-100 transition-colors">
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    className="w-5 h-5 text-green-600"
+                                                    fill="none"
+                                                    viewBox="0 0 24 24"
+                                                    stroke="currentColor"
+                                                >
+                                                    <path
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        strokeWidth={2}
+                                                        d="M3 12l9-9 9 9M4 10v10a1 1 0 001 1h5m8-11v10a1 1 0 01-1 1h-5"
+                                                    />
+                                                </svg>
+                                            </div>
+                                            <div>
+                                                <span className="text-sm font-medium text-gray-900">Households</span>
+                                                {showHouseholds && (
+                                                    <div className="text-xs text-gray-500">
+                                                        {`Currently showing ${households?.length || 0} household/s`}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                        <div className="relative">
+                                            <input
+                                                type="checkbox"
+                                                className="sr-only"
+                                                checked={showHouseholds}
+                                                onChange={(e) => setShowHouseholds(e.target.checked)}
+                                            />
+                                            <div
+                                                className={`w-12 h-6 rounded-full transition-all duration-300 ${showHouseholds ? 'bg-green-600' : 'bg-gray-300'
+                                                    }`}
+                                            ></div>
+                                            <div
+                                                className={`absolute left-0.5 top-0.5 bg-white w-5 h-5 rounded-full 
+                    transition-transform duration-300 shadow-sm ${showHouseholds ? 'translate-x-6' : ''
+                                                    }`}
+                                            ></div>
+                                        </div>
+                                    </label>
+
+                                    {/* Legend for Households */}
+                                    {showHouseholds && households?.length > 0 && (
+                                        <div className="ml-14 pl-1 space-y-2 animate-fadeIn">
+                                            <div className="text-xs font-medium text-gray-600">Status</div>
+                                            <div className="flex items-center gap-3 flex-wrap">
+                                                <div className="flex items-center gap-1 text-xs text-gray-700">
+                                                    <span className="w-3 h-3 rounded-full bg-green-500"></span> Safe
+                                                </div>
+                                                <div className="flex items-center gap-1 text-xs text-gray-700">
+                                                    <span className="w-3 h-3 rounded-full bg-amber-500"></span> At Risk
+                                                </div>
+                                                <div className="flex items-center gap-1 text-xs text-gray-700">
+                                                    <span className="w-3 h-3 rounded-full bg-red-500"></span> Need Rescue
+                                                </div>
+                                                <div className="flex items-center gap-1 text-xs text-gray-700">
+                                                    <span className="w-3 h-3 rounded-full bg-gray-400"></span> Evacuated
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -497,7 +575,7 @@ export default function MapControls({
                                                     <span className="text-sm font-medium text-gray-900">Hazards</span>
                                                     {showHazards && (
                                                         <div className="text-xs text-gray-500">
-                                                            {`Currently showing ${hazards?.length || 0} hazards`}
+                                                            {`Currently showing ${hazards?.length || 0} hazard/s`}
                                                         </div>
                                                     )}
                                                 </div>
@@ -521,7 +599,103 @@ export default function MapControls({
                                             </div>
                                         </label>
 
+                                        {/* Hazard legend */}
+                                        {showHazards && hazardTypes?.length > 0 && (
+                                            <div className="ml-10 pl-1 space-y-2 animate-fadeIn">
+                                                <div className="text-xs font-medium text-gray-600">Hazard Types</div>
+                                                <div className="flex items-center gap-3 flex-wrap">
+                                                    {hazardTypes.map((type) => (
+                                                        <div
+                                                            key={type.id}
+                                                            className="flex items-center gap-1 text-xs text-gray-700"
+                                                        >
+                                                            <span
+                                                                className="w-3 h-3 rounded-full"
+                                                                style={{ backgroundColor: type.color }}
+                                                            ></span>
+                                                            {type.name}
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
+
+
                                     </div>
+
+                                    {/* Divider */}
+                                    <div className="border-t border-gray-200"></div>
+
+                                    {/* Household Toggle */}
+                                    <div className="space-y-3">
+                                        <label className="flex items-center justify-between cursor-pointer group">
+                                            <div className="flex items-center gap-3">
+                                                <div className="p-2 bg-green-50 rounded-lg group-hover:bg-green-100 transition-colors">
+                                                    <svg
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        className="w-5 h-5 text-green-600"
+                                                        fill="none"
+                                                        viewBox="0 0 24 24"
+                                                        stroke="currentColor"
+                                                    >
+                                                        <path
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
+                                                            strokeWidth={2}
+                                                            d="M3 12l9-9 9 9M4 10v10a1 1 0 001 1h5m8-11v10a1 1 0 01-1 1h-5"
+                                                        />
+                                                    </svg>
+                                                </div>
+                                                <div>
+                                                    <span className="text-sm font-medium text-gray-900">Households</span>
+                                                    {showHouseholds && (
+                                                        <div className="text-xs text-gray-500">
+                                                            {`Currently showing ${households?.length || 0} household/s`}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+                                            <div className="relative">
+                                                <input
+                                                    type="checkbox"
+                                                    className="sr-only"
+                                                    checked={showHouseholds}
+                                                    onChange={(e) => setShowHouseholds(e.target.checked)}
+                                                />
+                                                <div
+                                                    className={`w-12 h-6 rounded-full transition-all duration-300 ${showHouseholds ? 'bg-green-600' : 'bg-gray-300'
+                                                        }`}
+                                                ></div>
+                                                <div
+                                                    className={`absolute left-0.5 top-0.5 bg-white w-5 h-5 rounded-full 
+                    transition-transform duration-300 shadow-sm ${showHouseholds ? 'translate-x-6' : ''
+                                                        }`}
+                                                ></div>
+                                            </div>
+                                        </label>
+
+                                        {/* Legend for Households */}
+                                        {showHouseholds && households?.length > 0 && (
+                                            <div className="ml-14 pl-1 space-y-2 animate-fadeIn">
+                                                <div className="text-xs font-medium text-gray-600">Status</div>
+                                                <div className="flex items-center gap-3 flex-wrap">
+                                                    <div className="flex items-center gap-1 text-xs text-gray-700">
+                                                        <span className="w-3 h-3 rounded-full bg-green-500"></span> Active
+                                                    </div>
+                                                    <div className="flex items-center gap-1 text-xs text-gray-700">
+                                                        <span className="w-3 h-3 rounded-full bg-amber-500"></span> At Risk
+                                                    </div>
+                                                    <div className="flex items-center gap-1 text-xs text-gray-700">
+                                                        <span className="w-3 h-3 rounded-full bg-red-500"></span> Need Rescue
+                                                    </div>
+                                                    <div className="flex items-center gap-1 text-xs text-gray-700">
+                                                        <span className="w-3 h-3 rounded-full bg-gray-400"></span> Evacuated
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+
                                 </div>
                             </div>
                         </div>

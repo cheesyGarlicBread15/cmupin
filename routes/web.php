@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\HazardController;
+use App\Http\Controllers\HouseholdController;
 use App\Http\Controllers\ActivityLogController;
 
 // TODO: household system
@@ -31,6 +32,21 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->name('update');
 
         Route::delete('/{hazard}', [HazardController::class, 'destroy'])
+            ->middleware('role:admin')
+            ->name('destroy');
+    });
+
+    Route::prefix('/households')->name('households.')->group(function () {
+        Route::get('/', [HouseholdController::class, 'index'])
+            ->name('index');
+
+        Route::post('/', [HouseholdController::class, 'store'])
+            ->name('store');
+
+        Route::patch('/{household}', [HouseholdController::class, 'update'])
+            ->name('update');
+
+        Route::delete('/{household}', [HouseholdController::class, 'destroy'])
             ->middleware('role:admin')
             ->name('destroy');
     });
