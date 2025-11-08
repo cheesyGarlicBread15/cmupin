@@ -45,6 +45,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::patch('/requests/{householdRequest}/approve', [HouseholdController::class, 'approveRequest'])->middleware('role:admin|leader')->name('requests.approve');
         Route::patch('/requests/{householdRequest}/deny', [HouseholdController::class, 'denyRequest'])->middleware('role:admin|leader')->name('requests.deny');
 
+        Route::delete('/members/{user}', [HouseholdController::class, 'removeMember'])->middleware('role:leader')->name('members.remove');
+        Route::post('/{household}/change-status', [HouseholdController::class, 'changeStatus'])->middleware('role:leader|member')->name('change-status');
+
         Route::middleware('role:member')->group(function () {
             Route::post('/join', [HouseholdController::class, 'requestJoin'])->name('request.join');
             Route::post('/create', [HouseholdController::class, 'requestCreate'])->name('request.create');

@@ -8,6 +8,7 @@ use App\Models\HouseholdRequest;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 use Spatie\Permission\Models\Role;
 
 class HouseholdController extends Controller
@@ -42,7 +43,6 @@ class HouseholdController extends Controller
         // --- Leader view ---
         if ($user->hasRole('leader')) {
             $household = Household::with(['members', 'leader'])->where('user_id', $user->id)->first();
-
             $requests = HouseholdRequest::with('user')
                 ->where('household_id', $household?->id)
                 ->where('type', 'join')
@@ -184,5 +184,43 @@ class HouseholdController extends Controller
     {
         $householdRequest->update(['status' => 'denied']);
         return back()->with('success', 'Request denied.');
+    }
+
+    public function removeMember(User $user)
+    {
+        /** @var User $actor */
+        $actor = Auth::user();
+
+        if (!$actor->hasRole('leader') || $actor->household_id !== $user->household_id) {
+            abort(403);
+        }
+
+        if ($user->id === $actor->id) {
+            return back()->with('warning', 'Leader cannot remove themselves here.');
+        }
+
+        $user->update(['household_id' => null]);
+        if ($user->hasRole('leader')) {
+            $user->syncRoles('member');
+        }
+
+        return back()->with('success', 'Member removed from household.');
+    }
+
+    public function changeStatus(Request $request, Household $household)
+    {
+        $user = Auth::user();
+
+        if ($user->household_id !== $household->id) {
+            abort(403);
+        }
+
+        $data = $request->validate([
+            'status' => ['required', Rule::in(['safe', 'at_risk', 'need_rescue', 'evacuated'])],
+        ]);
+
+        $household->update(['status' => $data['status']]);
+
+        return back()->with('success', 'Household status updated.');
     }
 }
