@@ -22,4 +22,19 @@ class Household extends Model
         'lat' => 'decimal:8',
         'long' => 'decimal:8',
     ];
+
+    public function leader()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function members()
+    {
+        return $this->hasMany(User::class);
+    }
+    
+    public function requests()
+    {
+        return $this->hasMany(HouseholdRequest::class);
+    }
 }

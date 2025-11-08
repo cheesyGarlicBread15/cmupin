@@ -8,7 +8,7 @@ import MemberView from './Views/MemberView';
 export default function Households({ households, filters, users }) {
     const { user, isAdmin, isLeader, isMember } = useAuth();
 
-    console.log(isAdmin);
+    console.log(user);
 
     return (
         <AppLayout>

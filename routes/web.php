@@ -36,19 +36,19 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->name('destroy');
     });
 
-    Route::prefix('/households')->name('households.')->middleware('role:admin')->group(function () {
-        Route::get('/', [HouseholdController::class, 'index'])
-            ->name('index');
+    Route::prefix('/households')->name('households.')->group(function () {
+        Route::get('/', [HouseholdController::class, 'index'])->name('index');
+        Route::post('/', [HouseholdController::class, 'store'])->middleware('role:admin|leader')->name('store');
+        Route::patch('/{household}', [HouseholdController::class, 'update'])->middleware('role:admin|leader')->name('update');
+        Route::delete('/{household}', [HouseholdController::class, 'destroy'])->middleware('role:admin')->name('destroy');
 
-        Route::post('/', [HouseholdController::class, 'store'])
-            ->name('store');
+        Route::patch('/requests/{householdRequest}/approve', [HouseholdController::class, 'approveRequest'])->middleware('role:admin|leader')->name('requests.approve');
+        Route::patch('/requests/{householdRequest}/deny', [HouseholdController::class, 'denyRequest'])->middleware('role:admin|leader')->name('requests.deny');
 
-        Route::patch('/{household}', [HouseholdController::class, 'update'])
-            ->name('update');
-
-        Route::delete('/{household}', [HouseholdController::class, 'destroy'])
-            ->middleware('role:admin')
-            ->name('destroy');
+        Route::middleware('role:member')->group(function () {
+            Route::post('/join', [HouseholdController::class, 'requestJoin'])->name('request.join');
+            Route::post('/create', [HouseholdController::class, 'requestCreate'])->name('request.create');
+        });
     });
 
 

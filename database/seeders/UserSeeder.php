@@ -10,7 +10,7 @@ class UserSeeder extends Seeder
 {
     /**
      * Run the database seeds.
-    */
+     */
     public function run(): void
     {
         $admin = User::create([
@@ -37,5 +37,12 @@ class UserSeeder extends Seeder
         ]);
         $member2->assignRole('member');
 
+        $member3 = User::create([
+            'name' => 'Red Line',
+            'email' => 'redline2024.blood@gmail.com',
+            'password' => bcrypt('password'),
+            'phone_number' => '09301539848',
+        ]);
+        $member3->assignRole('member');
     }
 }
