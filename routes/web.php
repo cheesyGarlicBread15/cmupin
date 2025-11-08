@@ -22,21 +22,21 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('map');
 
     Route::prefix('/hazards')->name('hazards.')->group(function () {
-        Route::get('/', [HazardController::class, 'index'])
+        Route::get('/', [HazardController::class, 'index'])->middleware('role:admin')
             ->name('index');
 
         Route::post('/', [HazardController::class, 'store'])
             ->name('store');
 
-        Route::patch('/{hazard}', [HazardController::class, 'update'])
+        Route::patch('/{hazard}', [HazardController::class, 'update'])->middleware('role:admin')
             ->name('update');
 
-        Route::delete('/{hazard}', [HazardController::class, 'destroy'])
+        Route::delete('/{hazard}', [HazardController::class, 'destroy'])->middleware('role:admin')
             ->middleware('role:admin')
             ->name('destroy');
     });
 
-    Route::prefix('/households')->name('households.')->group(function () {
+    Route::prefix('/households')->name('households.')->middleware('role:admin')->group(function () {
         Route::get('/', [HouseholdController::class, 'index'])
             ->name('index');
 
