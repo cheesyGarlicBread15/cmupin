@@ -237,11 +237,109 @@ function HazardMarkers({ hazards }) {
     ), [JSON.stringify(hazards)]);
 }
 
+function HouseholdMarkers({ households }) {
+    return useMemo(() => {
+        if (!households || households.length === 0) return null;
 
-export default function Map({ hazards, hazardTypes }) {
+        const statusColors = {
+            safe: "#22c55e",        // green
+            at_risk: "#f59e0b",     // amber
+            need_rescue: "#ef4444", // red
+            evacuated: "#6b7280",   // gray
+        };
+
+        return households.map((household) => {
+            const status = household.status?.toLowerCase();
+            const color = statusColors[status] || "#3b82f6";
+
+            // Only at_risk and need_rescue pulse
+            const shouldPulse = status === "at_risk" || status === "need_rescue";
+
+            return (
+                <Marker
+                    key={household.id}
+                    position={[household.lat, household.long]}
+                    icon={L.divIcon({
+                        className: "",
+                        html: `
+                            <div class="relative flex items-center justify-center">
+                                ${shouldPulse
+                                ? `
+                                        <span 
+                                            class="absolute animate-ping rounded-full opacity-75"
+                                            style="
+                                                background-color: ${color};
+                                                width: 28px;
+                                                height: 28px;
+                                            ">
+                                        </span>
+                                        `
+                                : `
+                                        <span 
+                                            class="absolute rounded-full opacity-40"
+                                            style="
+                                                background-color: ${color};
+                                                width: 24px;
+                                                height: 24px;
+                                            ">
+                                        </span>
+                                        `
+                            }
+                                <span 
+                                    class="relative rounded-full shadow-lg border-2 border-white flex items-center justify-center"
+                                    style="
+                                        background-color: ${color};
+                                        width: 18px;
+                                        height: 18px;
+                                    ">
+                                    <svg xmlns="http://www.w3.org/2000/svg" 
+                                        fill="white" viewBox="0 0 24 24" 
+                                        stroke="none" width="10" height="10">
+                                        <path d="M3 12L12 4l9 8v8a1 1 0 01-1 1h-5v-5H9v5H4a1 1 0 01-1-1v-8z"/>
+                                    </svg>
+                                </span>
+                            </div>
+                        `,
+                        iconSize: [28, 28],
+                        iconAnchor: [14, 14],
+                    })}
+                >
+                    <Popup>
+                        <div className="space-y-1">
+                            <strong className="text-gray-800">{household.name}</strong>
+                            <div className="text-sm text-gray-600">
+                                <span className="font-semibold">Address:</span>{" "}
+                                {household.address}
+                                <br />
+                                <span className="font-semibold">Status:</span>{" "}
+                                <span
+                                    style={{
+                                        color,
+                                        fontWeight: 600,
+                                        textTransform: "capitalize",
+                                    }}
+                                >
+                                    {household.status
+                                        ? household.status
+                                            .split("_")
+                                            .map(word => word[0].toUpperCase() + word.slice(1))
+                                            .join(" ")
+                                        : "Unknown"}
+                                </span>
+                            </div>
+                        </div>
+                    </Popup>
+                </Marker>
+            );
+        });
+    }, [JSON.stringify(households)]);
+}
+
+export default function Map({ hazards, hazardTypes, households }) {
     const [showHeatmap, setShowHeatmap] = useState(false);
     const [showEarthquakes, setShowEarthquakes] = useState(false);
     const [showHazards, setShowHazards] = useState(false);
+    const [showHouseholds, setShowHouseholds] = useState(false);
     const [heatmapData, setHeatmapData] = useState([]);
     const [earthquakes, setEarthquakes] = useState([]);
     const [selectedEarthquake, setSelectedEarthquake] = useState(null);
@@ -469,7 +567,9 @@ export default function Map({ hazards, hazardTypes }) {
                         />
                     )}
 
-                    { showHazards && <HazardMarkers hazards={hazards} /> }
+                    {showHazards && <HazardMarkers hazards={hazards} />}
+
+                    {showHouseholds && <HouseholdMarkers households={households} />}
 
                     <HeatmapLayer
                         show={showHeatmap}
@@ -539,6 +639,9 @@ export default function Map({ hazards, hazardTypes }) {
                     heatmapData={heatmapData}
                     hazards={hazards}
                     hazardTypes={hazardTypes}
+                    households={households}
+                    setShowHouseholds={setShowHouseholds}
+                    showHouseholds={showHouseholds}
                 />
 
                 {/* Earthquake Detail Panel */}

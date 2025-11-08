@@ -23,6 +23,7 @@ class User extends Authenticatable
         'email',
         'password',
         'phone_number',
+        'household_id',
     ];
 
     /**
@@ -46,5 +47,16 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function household()
+    {
+        return $this->belongsTo(Household::class);
+    }
+
+
+    public function householdRequests()
+    {
+        return $this->hasMany(HouseholdRequest::class);
     }
 }

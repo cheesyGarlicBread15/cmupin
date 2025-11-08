@@ -30,7 +30,7 @@ class NewHazardAlert extends Notification
             ->line("A new {$h->hazardType->name} has been reported.")
             ->line("Severity level: {$h->severity}")
             ->line("Location: {$h->latitude}, {$h->longitude}")
-            ->action('View Hazard', url("/hazards/{$h->id}"))
+            ->action('View Hazard', url("/map"))
             ->line('Stay safe.');
     }
 }

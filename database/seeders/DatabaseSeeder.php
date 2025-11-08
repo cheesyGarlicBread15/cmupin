@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
             RolesSeeder::class,
             UserSeeder::class,
             HazardTypesSeeder::class,
+            HouseholdSeeder::class,
         ]);
     }
 }

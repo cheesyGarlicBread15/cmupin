@@ -15,18 +15,34 @@ class UserSeeder extends Seeder
     {
         $admin = User::create([
             'name' => 'Admin User',
-            'email' => 'admin@gmail.com',
-            'password' => bcrypt('admin'),
+            'email' => 'a3.marbuk@gmail.com',
+            'password' => bcrypt('password'),
             'phone_number' => '09924782938',
         ]);
+        $admin->assignRole('admin');
 
         $member1 = User::create([
             'name' => 'Daven Alajid',
             'email' => 's.alajid.daven@cmu.edu.ph',
-            'password' => bcrypt('member'),
+            'password' => bcrypt('password'),
             'phone_number' => '09301539848',
         ]);
+        $member1->assignRole('member');
 
-        $admin->assignRole('admin');
+        $member2 = User::create([
+            'name' => 'Garlic Pizza',
+            'email' => 'garlicpizza15@gmail.com',
+            'password' => bcrypt('password'),
+            'phone_number' => '09301539848',
+        ]);
+        $member2->assignRole('member');
+
+        $member3 = User::create([
+            'name' => 'Red Line',
+            'email' => 'redline2024.blood@gmail.com',
+            'password' => bcrypt('password'),
+            'phone_number' => '09301539848',
+        ]);
+        $member3->assignRole('member');
     }
 }
