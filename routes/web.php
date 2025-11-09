@@ -9,8 +9,6 @@ use App\Http\Controllers\HouseholdController;
 use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\DashboardController;
 
-// TODO: logs
-
 Route::get('/', fn() => Inertia::render('Auth/Login'));
 
 Route::middleware(['auth', 'verified'])->group(function () {

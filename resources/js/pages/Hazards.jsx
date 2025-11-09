@@ -46,8 +46,7 @@ export default function Hazards({ hazards, filters }) {
         };
         return (
             <span
-                className={`px-2 py-1 rounded-full text-xs font-semibold capitalize ${colors[status] || 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300'
-                    }`}
+                className={`px-2 py-1 rounded-full text-xs font-semibold capitalize ${colors[status] || 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300'}`}
             >
                 {status}
             </span>
@@ -64,8 +63,7 @@ export default function Hazards({ hazards, filters }) {
         };
         return (
             <span
-                className={`px-2 py-1 rounded-full text-xs font-semibold ${levels[level] || 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300'
-                    }`}
+                className={`px-2 py-1 rounded-full text-xs font-semibold ${levels[level] || 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300'}`}
             >
                 {level}
             </span>
@@ -129,13 +127,11 @@ export default function Hazards({ hazards, filters }) {
 
     return (
         <AppLayout>
-            <div className="p-6 text-gray-900 dark:text-gray-100 bg-gray-50 dark:bg-gray-900 min-h-screen">
-                <div>
-                    <h1 className="text-3xl font-bold text-white mb-5">Hazards</h1>
-                </div>
+            <div className="p-4 sm:p-6 text-gray-900 dark:text-gray-100 bg-gray-50 dark:bg-gray-900 min-h-screen">
+                <h1 className="text-2xl sm:text-3xl font-bold text-white mb-5">Hazards</h1>
 
                 {/* Tabs */}
-                <div className="flex gap-2 mb-6">
+                <div className="flex flex-wrap gap-2 mb-6">
                     {['open', 'resolved', 'all'].map((status) => {
                         const isActive = tab === status;
                         const isAll = status === 'all';
@@ -143,7 +139,7 @@ export default function Hazards({ hazards, filters }) {
                             <button
                                 key={status}
                                 onClick={() => handleTabChange(status)}
-                                className={`px-4 py-2 rounded-lg border font-medium transition-all duration-200
+                                className={`px-3 sm:px-4 py-2 rounded-lg border font-medium transition-all duration-200
                                     ${isActive
                                         ? isAll
                                             ? 'bg-gray-300 dark:bg-gray-600 border-gray-400 dark:border-gray-500 text-gray-900 dark:text-gray-100 shadow-sm'
@@ -159,10 +155,10 @@ export default function Hazards({ hazards, filters }) {
                     })}
                 </div>
 
-                {/* Table */}
-                <div className="overflow-visible bg-white dark:bg-gray-800 rounded-xl shadow border border-gray-200 dark:border-gray-700">
-                    <table className="min-w-full text-sm">
-                        <thead className="bg-gray-100 dark:bg-gray-700/50 text-gray-800 dark:text-gray-200 uppercase text-xs tracking-wider">
+                {/* Table / Cards */}
+                <div className="overflow-x-auto rounded-xl shadow border border-gray-200 dark:border-gray-700">
+                    <table className="min-w-full text-sm border-collapse md:table">
+                        <thead className="hidden md:table-header-group bg-gray-100 dark:bg-gray-700/50 text-gray-800 dark:text-gray-200 uppercase text-xs tracking-wider">
                             <tr>
                                 <th className="px-4 py-3 text-left font-semibold">Type</th>
                                 <th className="px-4 py-3 text-left font-semibold">Description</th>
@@ -182,20 +178,26 @@ export default function Hazards({ hazards, filters }) {
                                 </tr>
                             ) : (
                                 hazards.data.map((h, i) => (
-                                    <tr
-                                        key={h.id}
-                                        className={`hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors ${i % 2 === 0 ? 'odd:bg-gray-50 dark:odd:bg-gray-800/40' : ''
-                                            }`}
-                                    >
-                                        <td className="px-4 py-3">{h.hazard_type?.name || '—'}</td>
-                                        <td className="px-4 py-3">{h.description || '—'}</td>
-                                        <td className="px-4 py-3">{severityBadge(h.severity)}</td>
-                                        <td className="px-4 py-3">{statusBadge(h.status)}</td>
-                                        <td className="px-4 py-3">{h.user?.name || 'Unknown'}</td>
-                                        <td className="px-4 py-3 text-gray-600 dark:text-gray-400">
-                                            {new Date(h.created_at).toLocaleString()}
+                                    <tr key={h.id} className={`hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors md:table-row flex flex-col md:flex-row mb-4 md:mb-0 rounded-lg md:rounded-none bg-white dark:bg-gray-800`}>
+                                        <td className="px-4 py-3 md:table-cell flex justify-between md:justify-start">
+                                            <span className="font-medium md:hidden">Type:</span> {h.hazard_type?.name || '—'}
                                         </td>
-                                        <td className="px-4 py-3 text-right">
+                                        <td className="px-4 py-3 md:table-cell flex justify-between md:justify-start">
+                                            <span className="font-medium md:hidden">Description:</span> {h.description || '—'}
+                                        </td>
+                                        <td className="px-4 py-3 md:table-cell flex justify-between md:justify-start">
+                                            <span className="font-medium md:hidden">Severity:</span> {severityBadge(h.severity)}
+                                        </td>
+                                        <td className="px-4 py-3 md:table-cell flex justify-between md:justify-start">
+                                            <span className="font-medium md:hidden">Status:</span> {statusBadge(h.status)}
+                                        </td>
+                                        <td className="px-4 py-3 md:table-cell flex justify-between md:justify-start">
+                                            <span className="font-medium md:hidden">Reporter:</span> {h.user?.name || 'Unknown'}
+                                        </td>
+                                        <td className="px-4 py-3 md:table-cell flex justify-between md:justify-start">
+                                            <span className="font-medium md:hidden">Date:</span> {new Date(h.created_at).toLocaleString()}
+                                        </td>
+                                        <td className="px-4 py-3 md:table-cell text-right">
                                             <ActionMenu hazard={h} />
                                         </td>
                                     </tr>
@@ -217,7 +219,7 @@ export default function Hazards({ hazards, filters }) {
                                 disabled={!link.url}
                                 onClick={() => link.url && router.visit(link.url, { preserveState: true })}
                                 dangerouslySetInnerHTML={{ __html: link.label }}
-                                className={`px-3 py-1.5 rounded-full border transition-all duration-200 ${link.active
+                                className={`px-3 py-1 rounded-full border transition-all duration-200 ${link.active
                                     ? 'bg-red-600 text-white border-red-600 shadow-md'
                                     : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
                                     } ${!link.url ? 'opacity-50 cursor-not-allowed' : ''}`}
@@ -242,7 +244,7 @@ export default function Hazards({ hazards, filters }) {
                             <p className="text-sm text-gray-600 dark:text-gray-300 mb-6">
                                 Are you sure you want to {modal.action} this hazard?
                             </p>
-                            <div className="flex justify-center gap-3">
+                            <div className="flex justify-center gap-3 flex-wrap">
                                 <button
                                     onClick={() => setModal({ open: false, action: null, hazardId: null })}
                                     className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
