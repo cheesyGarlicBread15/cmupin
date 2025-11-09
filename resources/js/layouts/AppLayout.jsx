@@ -7,7 +7,7 @@ export default function AppLayout({ children }) {
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const { url } = usePage(); // to check active route
     const { post } = useForm();
-    
+
     const navLinks = [
         { name: "Dashboard", href: route('dashboard'), roles: ['admin', 'leader', 'member'] },
         { name: "Map", href: route('map'), roles: ['admin', 'leader', 'member'] },
@@ -83,7 +83,11 @@ export default function AppLayout({ children }) {
             <div className="flex-1 flex flex-col overflow-hidden">
                 {/* Mobile topbar */}
                 <div className="md:hidden bg-gray-900 border-b border-gray-800 p-3 flex items-center justify-between z-40 relative">
-                    <div className="text-xl font-bold text-red-500">CMUPin</div>
+                    <div className="text-xl font-bold text-center">
+                        <span className="text-white">CMU</span>
+                        <span className="text-red-500">Pin</span>
+                    </div>
+
                     <button
                         className="text-gray-200 text-2xl focus:outline-none z-50"
                         onClick={() => setSidebarOpen(!sidebarOpen)}
