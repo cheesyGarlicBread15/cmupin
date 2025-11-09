@@ -22,7 +22,6 @@ export default function Hazards({ hazards, filters }) {
             router.delete(route('hazards.destroy', hazardId), {
                 preserveScroll: true,
                 onSuccess: () => {
-                    // Instantly remove from table for better UX
                     hazards.data = hazards.data.filter(h => h.id !== hazardId);
                 },
             });
@@ -30,7 +29,6 @@ export default function Hazards({ hazards, filters }) {
             router.patch(route('hazards.update', hazardId), { status: 'resolved' }, {
                 preserveScroll: true,
                 onSuccess: () => {
-                    // If currently viewing "open" tab, remove it instantly from the table
                     if (tab === 'open') {
                         hazards.data = hazards.data.filter(h => h.id !== hazardId);
                     }

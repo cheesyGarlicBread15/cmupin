@@ -242,10 +242,10 @@ function HouseholdMarkers({ households }) {
         if (!households || households.length === 0) return null;
 
         const statusColors = {
-            safe: "#22c55e",        // green
-            at_risk: "#f59e0b",     // amber
-            need_rescue: "#ef4444", // red
-            evacuated: "#6b7280",   // gray
+            safe: "#22c55e",
+            at_risk: "#f59e0b",
+            need_rescue: "#ef4444",
+            evacuated: "#6b7280",
         };
 
         return households.map((household) => {
@@ -471,7 +471,7 @@ export default function Map({ hazards, hazardTypes, households }) {
         }
     };
 
-    // Auto-refresh precipitation every 10 minute
+    // Auto-refresh precipitation every 10 minutes
     useEffect(() => {
         if (!showHeatmap) return;
         fetchPrecipitationData();
@@ -479,7 +479,7 @@ export default function Map({ hazards, hazardTypes, households }) {
         return () => clearInterval(interval);
     }, [showHeatmap]);
 
-    // Auto-refresh earthquakes every 1 minute
+    // Auto-refresh earthquakes every 10 minutes
     useEffect(() => {
         if (!showEarthquakes) return;
         fetchEarthquakeData();
@@ -586,8 +586,6 @@ export default function Map({ hazards, hazardTypes, households }) {
                     />
                 </MapContainer>
 
-                {/* TODO: make some into components */}
-
                 {/* right click menu */}
                 {contextMenu.visible && (
                     <div
@@ -649,7 +647,7 @@ export default function Map({ hazards, hazardTypes, households }) {
                     <div
                         className="absolute top-6 z-[1001] bg-white rounded-lg shadow-2xl p-4 max-w-sm"
                         style={{
-                            left: "calc(16rem + 1.5rem)", // 16rem sidebar + 1.5rem (24px) spacing
+                            left: "calc(16rem + 1.5rem)",
                         }}
                     >
                         <div className="flex justify-between items-start mb-3">

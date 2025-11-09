@@ -19,7 +19,7 @@ class HouseholdController extends Controller
         /** @var User $user */
         $user = Auth::user();
         $status = $request->get('status', 'all');
-        // --- Admin view ---
+        // Admin
         if ($user->hasRole('admin')) {
             $households = Household::withCount('members')->latest()
                 ->when($status !== 'all', fn($q) => $q->where('status', $status))
@@ -41,7 +41,7 @@ class HouseholdController extends Controller
             ]);
         }
 
-        // --- Leader view ---
+        // Leader
         if ($user->hasRole('leader')) {
             $household = Household::with(['members', 'leader'])->where('user_id', $user->id)->first();
             $requests = HouseholdRequest::with('user')

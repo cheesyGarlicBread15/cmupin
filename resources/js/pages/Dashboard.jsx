@@ -10,10 +10,10 @@ import {
 
 export default function Dashboard({ stats, hazards }) {
     const STATUS_COLORS = {
-        Safe: '#22c55e',        // green
-        'At Risk': '#eab308',   // yellow
-        'Need Rescue': '#ef4444', // red
-        Evacuated: '#3b82f6',   // blue
+        Safe: '#22c55e',
+        'At Risk': '#eab308',
+        'Need Rescue': '#ef4444',
+        Evacuated: '#3b82f6',
     };
 
     // Household stats
@@ -26,7 +26,6 @@ export default function Dashboard({ stats, hazards }) {
 
     const riskPercent = ((stats.atRisk + stats.needRescue) / (stats.total || 1)) * 100;
 
-    // Aggregate hazards by type for the chart
     const hazardData = hazards
         ? Object.values(
             hazards.reduce((acc, h) => {

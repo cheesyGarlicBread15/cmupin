@@ -19,7 +19,7 @@ class DashboardController extends Controller
         $needRescue = Household::where('status', 'need_rescue')->count();
         $evacuated = Household::where('status', 'evacuated')->count();
 
-        // Hazard stats (group by hazard type name)
+        // Hazard stats
         $hazardStats = Hazard::with('hazardType')
             ->get();
 

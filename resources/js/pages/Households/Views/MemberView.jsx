@@ -7,7 +7,6 @@ export default function MemberView({ household, availableHouseholds = [], pendin
     const [search, setSearch] = useState("");
     const [selectedHousehold, setSelectedHousehold] = useState("");
 
-    // Filter join search
     const filtered = availableHouseholds.filter((h) =>
         h.name.toLowerCase().includes(search.toLowerCase())
     );
@@ -34,7 +33,7 @@ export default function MemberView({ household, availableHouseholds = [], pendin
         evacuated: "bg-blue-500",
     };
 
-    // If the member is in a household → LeaderView style
+    // If the member is in a household, view household details
     if (household) {
         return (
             <AppLayout>
@@ -133,11 +132,11 @@ export default function MemberView({ household, availableHouseholds = [], pendin
         );
     }
 
-    // If the member is not in a household → show join/create forms
+    // If the member is not in a household, join/create form
     return (
         <AppLayout>
             <div className="p-6 grid grid-cols-1 lg:grid-cols-2 gap-8">
-                {/* JOIN SECTION */}
+                {/* Join */}
                 <div className="bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 shadow-lg rounded-2xl p-6 hover:shadow-red-600/20 transition-all">
                     <h2 className="text-xl font-bold text-white">Join an Existing Household</h2>
                     <p className="text-gray-400 text-sm mt-1">Search for your neighborhood household and send a join request.</p>
@@ -190,7 +189,7 @@ export default function MemberView({ household, availableHouseholds = [], pendin
                     </div>
                 </div>
 
-                {/* CREATE SECTION */}
+                {/* Create */}
                 <div className="bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 shadow-lg rounded-2xl p-6 hover:shadow-red-600/20 transition-all">
                     <h2 className="text-xl font-bold text-white">Request to Create a Household</h2>
                     <p className="text-gray-400 text-sm mt-1">Create your own household if none exists. Admin will review and approve.</p>

@@ -4,9 +4,7 @@ import HouseholdFormModal from '@/components/HouseholdFormModal';
 import AppLayout from '@/layouts/AppLayout';
 
 export default function AdminView({ households, filters, users, requests }) {
-    // Primary tab: 'households' or 'requests'
     const [primaryTab, setPrimaryTab] = useState(filters.primary || 'households');
-    // Sub-tab for households only
     const [subTab, setSubTab] = useState(filters.status || 'safe');
 
     const [modal, setModal] = useState({ open: false, action: null, household: null });

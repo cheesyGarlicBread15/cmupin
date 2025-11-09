@@ -31,18 +31,11 @@ export default function AppLayout({ children }) {
             >
                 <div className="flex flex-col h-full">
                     <div className="p-5 text-2xl font-extrabold tracking-wide text-center border-b border-gray-800">
-                        CMU
-
-                        {/* example of showing in frontend what is restricted */}
-                        {(isAdmin() || isMember()) &&
-                            <span className="text-red-500">Pin</span>
-                        }
-
+                        CMU <span className='text-red-500'>Pin</span>
                     </div>
 
                     <nav className="flex-1 p-4 space-y-1">
                         {navLinks.map((link) => {
-                            // ✅ Check visibility by role
                             const canView =
                                 (link.roles.includes('admin') && isAdmin()) ||
                                 (link.roles.includes('leader') && isLeader()) ||

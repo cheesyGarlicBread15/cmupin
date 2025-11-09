@@ -11,4 +11,13 @@ export default defineConfig({
         }),
         react(),
     ],
+    server: {
+        host: '0.0.0.0',          // listen on all interfaces
+        port: 5173,
+        hmr: {
+            host: '192.168.1.2',    // your laptop LAN IP
+            port: 5173
+        },
+    },
+
 });
