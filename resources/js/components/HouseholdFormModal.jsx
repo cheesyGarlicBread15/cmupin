@@ -13,16 +13,16 @@ L.Icon.Default.mergeOptions({
     shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
 });
 
-export default function HouseholdFormModal({ show, onClose, mode = "create", household = null, users = [] }) {
+export default function HouseholdFormModal({ show, onClose, mode = "create", users = [], formData, household = null }) {
     const modalRef = useRef(null);
 
     const { data, setData, post, patch, processing, errors, reset } = useForm({
-        name: household?.name || "",
-        address: household?.address || "",
-        lat: household?.lat || "",
-        long: household?.long || "",
-        status: household?.status || "safe",
-        user_id: household?.user_id || "",
+        name: formData.name || "",
+        address: formData.address || "",
+        lat: formData.lat || "",
+        long: formData.long || "",
+        status: formData.status || "safe",
+        user_id: formData.user_id || "",
     });
 
     const [searchQuery, setSearchQuery] = useState("");
@@ -222,8 +222,8 @@ export default function HouseholdFormModal({ show, onClose, mode = "create", hou
                                                         setDropdownOpen(false); // close dropdown
                                                     }}
                                                     className={`block w-full text-left px-3 py-2 text-sm hover:bg-red-100 dark:hover:bg-gray-700 ${data.user_id === user.id
-                                                            ? "bg-red-50 dark:bg-gray-700"
-                                                            : ""
+                                                        ? "bg-red-50 dark:bg-gray-700"
+                                                        : ""
                                                         }`}
                                                 >
                                                     {user.name}

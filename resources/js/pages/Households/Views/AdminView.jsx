@@ -72,13 +72,14 @@ export default function AdminView({ households, filters, users, requests }) {
 
     const openFormModal = (mode, household = null) => {
         setFormModal({ open: true, mode, household });
-        if (mode === 'edit' && household) {
+        if (household) {
             setFormData({
                 name: household.name,
                 address: household.address,
                 lat: household.lat,
                 long: household.long,
                 status: household.status,
+                user_id: household.user_id || '',
             });
         } else {
             setFormData({
@@ -87,6 +88,7 @@ export default function AdminView({ households, filters, users, requests }) {
                 lat: '',
                 long: '',
                 status: 'safe',
+                user_id: '',
             });
         }
     };
@@ -446,12 +448,13 @@ export default function AdminView({ households, filters, users, requests }) {
                 {/* Household Form Modal */}
                 {formModal.open && (
                     <HouseholdFormModal
+                        show={formModal.open}
                         mode={formModal.mode}
-                        household={formModal.household}
+                        users={users}
                         formData={formData}
-                        setFormData={setFormData}
                         onClose={closeFormModal}
                         onSubmit={handleFormSubmit}
+                        household={formModal.household}
                     />
                 )}
             </div>

@@ -26,7 +26,7 @@ class HouseholdController extends Controller
                 ->paginate(10)
                 ->appends(['status' => $status]);
 
-            $users = User::role('member')->orderBy('name')->get();
+            $users = User::role('member')->whereNull('household_id')->orderBy('name')->get();
 
             $requests = HouseholdRequest::with(['user', 'household'])
                 ->where('status', 'pending')

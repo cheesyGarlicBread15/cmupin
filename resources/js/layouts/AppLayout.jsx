@@ -77,8 +77,7 @@ export default function AppLayout({ children }) {
                 {/* Mobile topbar */}
                 <div className="md:hidden bg-gray-900 border-b border-gray-800 p-3 flex items-center justify-between z-40 relative">
                     <div className="text-xl font-bold text-center">
-                        <span className="text-white">CMU</span>
-                        <span className="text-red-500">Pin</span>
+                        CMU<span className="text-red-500">Pin</span>
                     </div>
 
                     <button
