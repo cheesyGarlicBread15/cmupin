@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Household;
 use App\Models\User;
 use App\Models\HouseholdRequest;
+use App\Services\ActivityLogger;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
@@ -74,7 +75,6 @@ class HouseholdController extends Controller
         abort(403);
     }
 
-    // Create household (direct creation by admin)
     public function store(Request $request)
     {
         $data = $request->validate([
@@ -93,6 +93,8 @@ class HouseholdController extends Controller
         $userToPromote->update(['household_id' => $household->id]);
         $userToPromote->syncRoles('leader');
 
+        ActivityLogger::log('Household created');
+
         return back()->with('success', 'Household created successfully.');
     }
 
@@ -108,6 +110,9 @@ class HouseholdController extends Controller
         ]);
 
         $household->update($data);
+
+        ActivityLogger::log('Household status updated');
+
         return back()->with('success', 'Household updated successfully.');
     }
 
@@ -119,6 +124,9 @@ class HouseholdController extends Controller
             if ($member->hasRole('leader')) $member->syncRoles('member');
         }
         $household->delete();
+
+        ActivityLogger::log('Household deleted');
+
         return back()->with('success', 'Household deleted successfully.');
     }
 
@@ -137,6 +145,8 @@ class HouseholdController extends Controller
             'type' => 'join',
             'status' => 'pending',
         ]);
+
+        ActivityLogger::log('Submitted join request');
 
         return back()->with('success', 'Join request sent successfully.');
     }
@@ -159,6 +169,8 @@ class HouseholdController extends Controller
             'meta' => json_encode($data),
         ]);
 
+        ActivityLogger::log('Submitted create request');
+
         return back()->with('success', 'Create household request submitted.');
     }
 
@@ -177,12 +189,17 @@ class HouseholdController extends Controller
             $householdRequest->update(['status' => 'approved', 'household_id' => $household->id]);
         }
 
+        ActivityLogger::log('Approved request');
+
         return back()->with('success', 'Request approved.');
     }
 
     public function denyRequest(HouseholdRequest $householdRequest)
     {
         $householdRequest->update(['status' => 'denied']);
+
+        ActivityLogger::log('Denied request');
+
         return back()->with('success', 'Request denied.');
     }
 
@@ -204,6 +221,8 @@ class HouseholdController extends Controller
             $user->syncRoles('member');
         }
 
+        ActivityLogger::log('Member removed');
+
         return back()->with('success', 'Member removed from household.');
     }
 
@@ -220,6 +239,8 @@ class HouseholdController extends Controller
         ]);
 
         $household->update(['status' => $data['status']]);
+
+        ActivityLogger::log('Changed household status');
 
         return back()->with('success', 'Household status updated.');
     }

@@ -57,7 +57,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Admin logs page
     Route::middleware('role:admin')->group(function () {
-        Route::get('/admin/activity-logs', [ActivityLogController::class, 'index'])
+        Route::get('/activity-logs', [ActivityLogController::class, 'index'])
             ->name('admin.logs');
     });
 

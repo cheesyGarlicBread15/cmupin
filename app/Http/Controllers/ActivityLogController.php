@@ -2,24 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\ActivityLog;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class ActivityLogController extends Controller
 {
     public function index(Request $request)
     {
-        $query = ActivityLog::with('user')->latest();
+        $logs = ActivityLog::with('user.roles')->latest()->paginate(10);
 
-        if ($request->filled('action')) {
-            $query->where('action', $request->input('action'));
-        }
-
-        $logs = $query->paginate(10);
-
-        return inertia('ActivityLogs', [
-            'logs' => $logs
+        return Inertia::render('ActivityLogs', [
+            'logs' => $logs,
         ]);
     }
 }

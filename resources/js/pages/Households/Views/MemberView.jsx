@@ -58,7 +58,6 @@ export default function MemberView({ availableHouseholds = [], pendingRequests =
                 console.log("Join request failed:", err);
             }
         });
-        console.log(selectedHousehold);
     };
 
     // Create submit
