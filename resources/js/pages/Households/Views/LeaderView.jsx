@@ -18,11 +18,11 @@ export default function LeaderView({ household, requests }) {
     const closeConfirm = () => setConfirmModal({ open: false, type: null, payload: null });
 
     const approveJoin = (requestId) => {
-        router.post(route('households.requests.leader.approve', requestId), {}, { onSuccess: () => window.location.reload() });
+        router.patch(route('households.requests.approve', requestId), {}, { onSuccess: () => window.location.reload() });
     };
 
     const denyJoin = (requestId) => {
-        router.post(route('households.requests.leader.deny', requestId), {}, { onSuccess: () => window.location.reload() });
+        router.patch(route('households.requests.deny', requestId), {}, { onSuccess: () => window.location.reload() });
     };
 
     const removeMember = (userId) => {

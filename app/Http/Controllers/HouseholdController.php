@@ -58,7 +58,7 @@ class HouseholdController extends Controller
 
         // --- Member view ---
         if ($user->hasRole('member')) {
-            $household = Household::with('members')->find($user->household_id);
+            $household = Household::with(['members', 'leader'])->find($user->household_id);
 
             if (!$household) {
                 $availableHouseholds = Household::select('id', 'name')->orderBy('name')->get();
