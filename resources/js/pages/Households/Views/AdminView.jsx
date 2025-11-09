@@ -208,10 +208,8 @@ export default function AdminView({ households, filters, users, requests }) {
     return (
         <AppLayout>
             <div className="p-6 text-gray-900 dark:text-gray-100 bg-gray-50 dark:bg-gray-900 min-h-screen">
-                <div className="flex justify-between items-center mb-6">
-                    <div>
-                        <h1 className="text-3xl font-bold text-white">Households</h1>
-                    </div>
+                <div className="flex justify-between items-center mb-6 flex-wrap gap-2">
+                    <h1 className="text-3xl font-bold text-white">Households</h1>
                     {primaryTab === 'households' && (
                         <button
                             onClick={() => openFormModal('create')}
@@ -229,7 +227,7 @@ export default function AdminView({ households, filters, users, requests }) {
                             key={t}
                             onClick={() => handlePrimaryTabChange(t)}
                             className={`px-4 py-2 rounded-lg font-medium transition-all duration-200
-                            ${primaryTab === t
+                        ${primaryTab === t
                                     ? 'bg-gray-200 dark:bg-gray-700 shadow-sm'
                                     : 'bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700'
                                 }`}
@@ -247,7 +245,7 @@ export default function AdminView({ households, filters, users, requests }) {
                                 key={status}
                                 onClick={() => handleSubTabChange(status)}
                                 className={`px-4 py-2 rounded-lg border font-medium transition-all duration-200
-                                ${subTab === status
+                            ${subTab === status
                                         ? 'bg-gray-200 dark:bg-gray-700 shadow-sm'
                                         : 'bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700'
                                     }`}
@@ -260,7 +258,7 @@ export default function AdminView({ households, filters, users, requests }) {
 
                 {/* Table Rendering */}
                 {primaryTab === 'requests' ? (
-                    <div className="overflow-visible bg-white dark:bg-gray-800 rounded-xl shadow border border-gray-200 dark:border-gray-700 mt-4">
+                    <div className="overflow-x-auto bg-white dark:bg-gray-800 rounded-xl shadow border border-gray-200 dark:border-gray-700 mt-4">
                         <table className="min-w-full text-sm">
                             <thead className="bg-gray-100 dark:bg-gray-700/50 text-gray-800 dark:text-gray-200 uppercase text-xs tracking-wider">
                                 <tr>
@@ -306,7 +304,7 @@ export default function AdminView({ households, filters, users, requests }) {
                         </table>
                     </div>
                 ) : (
-                    <div className="overflow-visible bg-white dark:bg-gray-800 rounded-xl shadow border border-gray-200 dark:border-gray-700">
+                    <div className="overflow-x-auto bg-white dark:bg-gray-800 rounded-xl shadow border border-gray-200 dark:border-gray-700">
                         <table className="min-w-full text-sm">
                             <thead className="bg-gray-100 dark:bg-gray-700/50 text-gray-800 dark:text-gray-200 uppercase text-xs tracking-wider">
                                 <tr>
@@ -339,7 +337,7 @@ export default function AdminView({ households, filters, users, requests }) {
                                                 <td className="px-4 py-3 text-gray-600 dark:text-gray-400">
                                                     {new Date(h.created_at).toLocaleString()}
                                                 </td>
-                                                <td className="px-4 py-3 text-right">
+                                                <td className="px-4 py-3 text-right relative">
                                                     <ActionMenu household={h} />
                                                 </td>
                                             </tr>
@@ -459,6 +457,5 @@ export default function AdminView({ households, filters, users, requests }) {
                 )}
             </div>
         </AppLayout>
-
     );
 }
