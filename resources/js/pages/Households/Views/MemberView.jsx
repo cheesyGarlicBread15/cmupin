@@ -166,7 +166,7 @@ export default function MemberView({ household, availableHouseholds = [], pendin
                                 <option value="">Select household</option>
                                 {filtered.map((h) => (
                                     <option key={h.id} value={h.id}>
-                                        {h.name} — {h.address}
+                                        {h.name}
                                     </option>
                                 ))}
                             </select>
@@ -225,7 +225,7 @@ export default function MemberView({ household, availableHouseholds = [], pendin
                             <div className="flex justify-end mt-4">
                                 <button
                                     type="submit"
-                                    className="px-6 py-2 bg-red-600 hover:bg-red-700 rounded-lg text-white font-semibold transition"
+                                    className="w-full px-6 py-2 bg-red-600 hover:bg-red-700 rounded-lg text-white font-semibold transition"
                                 >
                                     Submit Create Request
                                 </button>
