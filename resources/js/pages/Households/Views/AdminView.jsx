@@ -209,7 +209,9 @@ export default function AdminView({ households, filters, users, requests }) {
         <AppLayout>
             <div className="p-6 text-gray-900 dark:text-gray-100 bg-gray-50 dark:bg-gray-900 min-h-screen">
                 <div className="flex justify-between items-center mb-6">
-                    <h1 className="text-2xl font-bold">Households</h1>
+                    <div>
+                        <h1 className="text-3xl font-bold text-white">Households</h1>
+                    </div>
                     {primaryTab === 'households' && (
                         <button
                             onClick={() => openFormModal('create')}

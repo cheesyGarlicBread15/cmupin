@@ -7,14 +7,14 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\HazardController;
 use App\Http\Controllers\HouseholdController;
 use App\Http\Controllers\ActivityLogController;
+use App\Http\Controllers\DashboardController;
 
-// TODO: household system
 // TODO: logs
 
 Route::get('/', fn() => Inertia::render('Auth/Login'));
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/dashboard', fn() => Inertia::render('Dashboard'))
+    Route::get('/dashboard', [DashboardController::class, 'index'])
         ->middleware('role:admin|leader|member')
         ->name('dashboard');
 

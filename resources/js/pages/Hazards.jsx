@@ -132,7 +132,9 @@ export default function Hazards({ hazards, filters }) {
     return (
         <AppLayout>
             <div className="p-6 text-gray-900 dark:text-gray-100 bg-gray-50 dark:bg-gray-900 min-h-screen">
-                <h1 className="text-2xl font-bold mb-6">Hazards</h1>
+                <div>
+                    <h1 className="text-3xl font-bold text-white mb-5">Hazards</h1>
+                </div>
 
                 {/* Tabs */}
                 <div className="flex gap-2 mb-6">
