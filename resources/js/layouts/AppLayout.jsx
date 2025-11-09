@@ -1,20 +1,19 @@
 import { Link, useForm, usePage } from '@inertiajs/react';
-import { use, useState } from 'react';
+import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 
 export default function AppLayout({ children }) {
     const { user, isAdmin, isMember, isLeader } = useAuth();
     const [sidebarOpen, setSidebarOpen] = useState(false);
-    const { url } = usePage(); // to check active route
     const { post } = useForm();
 
     const navLinks = [
-        { name: "Dashboard", href: route('dashboard'), roles: ['admin', 'leader', 'member'] },
-        { name: "Map", href: route('map'), roles: ['admin', 'leader', 'member'] },
-        { name: "Hazards", href: route('hazards.index'), roles: ['admin'] },
-        { name: "Households", href: route('households.index'), roles: ['admin', 'leader', 'member'] },
-        { name: "Activity Logs", href: route('admin.logs'), roles: ['admin'] },
-        { name: "Profile", href: route('profile.edit'), roles: ['admin', 'leader', 'member'] },
+        { name: "Dashboard", href: route('dashboard'), routeName: 'dashboard', roles: ['admin', 'leader', 'member'] },
+        { name: "Map", href: route('map'), routeName: 'map', roles: ['admin', 'leader', 'member'] },
+        { name: "Hazards", href: route('hazards.index'), routeName: 'hazards.index', roles: ['admin'] },
+        { name: "Households", href: route('households.index'), routeName: 'households.index', roles: ['admin', 'leader', 'member'] },
+        { name: "Activity Logs", href: route('admin.logs'), routeName: 'admin.logs', roles: ['admin'] },
+        { name: "Profile", href: route('profile.edit'), routeName: 'profile.edit', roles: ['admin', 'leader', 'member'] },
     ];
 
     const handleLogout = () => {
@@ -31,7 +30,7 @@ export default function AppLayout({ children }) {
             >
                 <div className="flex flex-col h-full">
                     <div className="p-5 text-2xl font-extrabold tracking-wide text-center border-b border-gray-800">
-                        CMU <span className='text-red-500'>Pin</span>
+                        CMU <span className="text-red-500">Pin</span>
                     </div>
 
                     <nav className="flex-1 p-4 space-y-1">
@@ -43,14 +42,15 @@ export default function AppLayout({ children }) {
 
                             if (!canView) return null;
 
-                            const isActive = url.startsWith(link.href);
+                            const isActive = route().current(link.routeName);
+
                             return (
                                 <Link
                                     key={link.name}
                                     href={link.href}
                                     className={`flex items-center px-4 py-2 rounded-lg transition-all duration-200
-                    ${isActive
-                                            ? "bg-red-600 text-white font-medium"
+                                        ${isActive
+                                            ? "bg-red-600/20 text-red-400 font-medium border border-red-600/30"
                                             : "text-gray-300 hover:bg-gray-800 hover:text-white"
                                         }`}
                                     onClick={() => setSidebarOpen(false)}
