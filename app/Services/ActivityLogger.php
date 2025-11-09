@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Auth;
 
 class ActivityLogger
 {
-    public static function log(string $action, $subject = null, array $meta = [])
+    public static function log(string $action)
     {
         $user = Auth::user();
 

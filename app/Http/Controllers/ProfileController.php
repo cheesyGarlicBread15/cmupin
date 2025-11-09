@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Services\ActivityLogger;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -36,6 +37,8 @@ class ProfileController extends Controller
         }
 
         $request->user()->save();
+
+        ActivityLogger::log('Updated profile');
 
         return Redirect::route('profile.edit');
     }

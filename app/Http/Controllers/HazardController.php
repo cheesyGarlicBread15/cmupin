@@ -6,6 +6,7 @@ use App\Models\Hazard;
 use App\Models\HazardType;
 use App\Models\User;
 use App\Notifications\NewHazardAlert;
+use App\Services\ActivityLogger;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
@@ -52,6 +53,8 @@ class HazardController extends Controller
         $users = User::whereNotNull('email')->get();
         Notification::send($users, new NewHazardAlert($hazard));
 
+        ActivityLogger::log('Hazard pinned');
+
         return back()->with('success', 'Hazard pinned successfully.');
     }
 
@@ -63,7 +66,7 @@ class HazardController extends Controller
 
         $hazard->update($data);
 
-        // optional: log activity here
+        ActivityLogger::log('Hazard status updated');
 
         return back()->with('success', 'Hazard updated.');
     }
@@ -72,7 +75,7 @@ class HazardController extends Controller
     {
         $hazard->delete();
 
-        // optional: log activity here
+        ActivityLogger::log('Hazard deleted');
 
         return back()->with('success', 'Hazard deleted.');
     }

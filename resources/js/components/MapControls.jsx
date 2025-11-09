@@ -22,7 +22,6 @@ export default function MapControls({
     setShowHouseholds,
     showHouseholds
 }) {
-    console.log('Households:', households);
     const [isCollapsed, setIsCollapsed] = useState(false)
     return (
         <>
